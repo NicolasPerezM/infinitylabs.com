@@ -1644,8 +1644,11 @@ li {
   pointer-events: auto;
   cursor: pointer;
   flex: 0 auto;
+  justify-content: center;
   align-self: auto;
+  align-items: center;
   transition: box-shadow .2s, color .3s, background-color .3s;
+  display: flex;
 }
 
 .primary-button.hidden-tablet:hover {
@@ -2549,6 +2552,8 @@ li {
 
 .button-nav-wrapper {
   grid-column-gap: 15px;
+  justify-content: center;
+  align-self: center;
   align-items: center;
   display: flex;
 }
@@ -8189,6 +8194,10 @@ li {
     box-shadow: 0 0 7px 3px var(--thirdcolor);
   }
 
+  .primary-button.noit {
+    flex: 0 auto;
+  }
+
   .banner-title-wrapper {
     z-index: 5;
     width: 80%;
@@ -11388,6 +11397,10 @@ li {
     grid-template-columns: 1fr;
   }
 
+  .primary-button.hidden-tablet {
+    position: relative;
+  }
+
   .banner-title-wrapper {
     width: 80%;
     left: auto;
@@ -11535,12 +11548,24 @@ li {
     display: flex;
   }
 
+  .navbar {
+    width: 100%;
+  }
+
   .nav-container {
     padding-left: 0;
   }
 
   .nav-dropdown-list.megamenu {
     padding-right: 0;
+  }
+
+  .close-button-wrap {
+    padding-right: 15px;
+  }
+
+  .nav-menu-shadow-overlay {
+    width: 90%;
   }
 
   .nav-link {
@@ -11550,6 +11575,19 @@ li {
   .megamenu-dropdown-wrapper {
     align-items: center;
     width: 100%;
+  }
+
+  .button-nav-wrapper {
+    order: 0;
+    width: 80%;
+    display: block;
+  }
+
+  .button-nav-wrapper.tablet-buttons {
+    border: 0 solid #f6f3f3;
+    align-self: center;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .menu-button {
