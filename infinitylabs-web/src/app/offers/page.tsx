@@ -61,7 +61,7 @@ export default function OffersPage() {
           </ul>
         </Container>
       </Section>
-      <FinalCta eyebrow="Next step" />
+      <FinalCta />
     </>
   );
 }

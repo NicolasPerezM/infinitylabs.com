@@ -60,7 +60,7 @@ export default function CapabilitiesPage() {
           </Section>
         );
       })}
-      <FinalCta eyebrow="Next step" />
+      <FinalCta />
     </>
   );
 }

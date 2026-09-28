@@ -116,7 +116,7 @@ export default async function OfferPage({ params }: Props) {
         </Section>
       )}
 
-      <FinalCta eyebrow="Next step" title={`Ready to scope ${o.name}?`} body="Tell us about the process, the systems involved and the outcome you need. We reply with next steps, not a sales sequence." />
+      <FinalCta title={`Ready to scope ${o.name}?`} body="Tell us about the process, the systems involved and the outcome you need. We reply with next steps, not a sales sequence." />
     </>
   );
 }

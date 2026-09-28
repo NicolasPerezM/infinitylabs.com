@@ -113,7 +113,7 @@ export default function AboutPage() {
           </div>
         </Container>
       </Section>
-      <FinalCta eyebrow="Next step" />
+      <FinalCta />
     </>
   );
 }

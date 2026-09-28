@@ -74,7 +74,7 @@ export default function LabsPage() {
           </dl>
         </Container>
       </Section>
-      <FinalCta eyebrow="Next step" title="Have a problem worth an experiment?" body="Labs takes on a small number of exploratory engagements where the outcome is uncertain and the learning is valuable to both sides." />
+      <FinalCta title="Have a problem worth an experiment?" body="Labs takes on a small number of exploratory engagements where the outcome is uncertain and the learning is valuable to both sides." />
     </>
   );
 }

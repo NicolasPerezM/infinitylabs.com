@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/brand/LogoMark";
 import { Lockup } from "@/components/brand/Lockup";
 import { Container } from "@/components/ui/Container";
 import { footerColumns, legalNav } from "@/content/navigation";
@@ -7,12 +8,16 @@ import { site } from "@/content/site";
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="theme-dark relative bg-surface-primary text-text-primary">
+    <footer className="theme-dark relative overflow-hidden bg-surface-primary text-text-primary">
       <span aria-hidden className="absolute inset-x-0 top-0 h-0.5 state-gradient" />
-      <Container className="grid gap-12 py-16 md:grid-cols-12 md:gap-8">
+      {/* the loop closes: the symbol, monochrome, as the terminal node of the page */}
+      <div aria-hidden className="pointer-events-none absolute -right-10 -top-6 opacity-[0.07] md:right-8">
+        <LogoMark size={260} variant="mono" decorative className="text-text-primary" />
+      </div>
+      <Container className="relative grid gap-12 py-16 md:grid-cols-12 md:gap-8">
         <div className="flex flex-col gap-5 md:col-span-4">
           <Lockup size={28} />
-          <p className="max-w-[36ch] text-small text-text-secondary">{site.category}. We design, build and operate AI-powered business systems.</p>
+          <p className="max-w-[34ch] text-small text-text-secondary">{site.category}. We design, build and operate AI-powered business systems.</p>
           <address className="not-italic text-small text-text-secondary">
             <a href={`mailto:${site.email}`} className="text-text-primary hover:underline">
               {site.email}
@@ -52,10 +57,10 @@ export function Footer() {
           ))}
         </nav>
       </Container>
-      <div className="border-t border-border-subtle">
+      <div className="relative border-t border-border-subtle">
         <Container className="flex flex-col gap-3 py-6 text-small text-text-tertiary sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {site.name}. All rights reserved.
+          <p className="label-mono">
+            © {year} {site.name} · Bogotá · Colombia
           </p>
           <ul className="flex gap-5">
             {legalNav.map((item) => (

@@ -76,7 +76,7 @@ export default function SolutionsPage() {
           </ul>
         </Container>
       </Section>
-      <FinalCta eyebrow="Next step" />
+      <FinalCta />
     </>
   );
 }

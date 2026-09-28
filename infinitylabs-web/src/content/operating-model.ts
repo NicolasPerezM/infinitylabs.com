@@ -6,9 +6,11 @@ export type StageDefinition = {
   name: string;
   /** One-line promise, business language. */
   promise: string;
-  /** What happens in this stage. */
+  /** What happens in this stage (used on hubs, not on the home). */
   description: string;
   items: string[];
+  /** Delivery method steps that belong to this stage. */
+  method: string[];
   capabilities: string[];
 };
 
@@ -24,7 +26,8 @@ export const operatingModel: StageDefinition[] = [
     promise: "Find where AI creates measurable value in your processes, and where it does not.",
     description:
       "We start from the business process, not the model. Discovery maps how work actually flows, quantifies the cost of manual steps, exceptions and delays, and scores each opportunity on value, feasibility, data readiness and risk. The output is a prioritized roadmap with architecture sketches and a business case, not a slide about the future.",
-    items: ["AI opportunity discovery", "AI readiness assessment", "Process mapping", "AI roadmapping"],
+    items: ["Opportunity discovery", "Readiness assessment", "Process mapping", "Roadmap and business case"],
+    method: ["Discovery", "Architecture"],
     capabilities: ["ai-transformation"],
   },
   {
@@ -34,12 +37,8 @@ export const operatingModel: StageDefinition[] = [
     promise: "Engineer the system with the right mix of software, AI, agents and human approval.",
     description:
       "Build turns a prioritized opportunity into a production system: integration with your systems of record, deterministic logic where rules are known, AI where judgment is needed, agents where autonomy is safe, and human approval where the cost of error is high. Every system ships with an evaluation set and observability from the first release.",
-    items: [
-      "Agentic workflow systems",
-      "Enterprise knowledge and document intelligence",
-      "Data + AI foundations",
-      "AI infrastructure and integration",
-    ],
+    items: ["Agentic workflow systems", "Knowledge and document intelligence", "Data + AI foundations", "Integration and infrastructure"],
+    method: ["Prototype", "Evaluate"],
     capabilities: ["ai-engineering", "agentic-systems", "data-ai"],
   },
   {
@@ -49,7 +48,8 @@ export const operatingModel: StageDefinition[] = [
     promise: "Run it as a living system: evaluated, observed, governed and improved.",
     description:
       "Deployment is the beginning of the operating phase, not the end of the engagement. We monitor quality and cost, evaluate every model or prompt change against the same test sets, manage drift, review exceptions with your team and feed what we learn back into the system and the roadmap.",
-    items: ["Managed AI", "Evaluation and quality gates", "Observability and cost control", "Governance and continuous improvement"],
+    items: ["Managed AI", "Evaluation and quality gates", "Observability and cost control", "Continuous improvement"],
+    method: ["Deploy", "Operate"],
     capabilities: ["ai-evaluation", "managed-ai"],
   },
 ];

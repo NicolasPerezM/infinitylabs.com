@@ -12,6 +12,9 @@ export const site = {
   tagline: "We turn business processes into intelligent systems.",
   description:
     "Infinity Labs is an AI Transformation & Engineering company. We design, build and operate AI-powered business systems for mid-market and enterprise organizations.",
+  /** Hero support line. Kept under 26 words on purpose (docs/UX_UI_AUDIT.md text budget). */
+  heroLede:
+    "Infinity Labs designs, builds and operates AI-powered business systems for mid-market and enterprise companies. Production, evaluation and human control from day one.",
   /** Production URL. Update when the domain decision is final (GAP-016). */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://infinitylabscol.com",
   locale: "en",

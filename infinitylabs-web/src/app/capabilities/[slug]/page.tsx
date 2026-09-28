@@ -104,7 +104,7 @@ export default async function CapabilityPage({ params }: Props) {
           </ul>
         </Container>
       </Section>
-      <FinalCta eyebrow="Next step" />
+      <FinalCta />
     </>
   );
 }

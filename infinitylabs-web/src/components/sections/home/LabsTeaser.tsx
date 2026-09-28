@@ -1,37 +1,36 @@
+import Link from "next/link";
 import { LogoMark } from "@/components/brand/LogoMark";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { SectionFrame } from "@/components/ui/SectionFrame";
 import { Tag } from "@/components/ui/Tag";
-import { TextLink } from "@/components/ui/TextLink";
-import { labsInitiatives, labsIntro } from "@/content/labs";
+import { labsInitiatives } from "@/content/labs";
 
+/** 07 · Labs: three lines, honest status, one link. */
 export function LabsTeaser() {
-  const items = labsInitiatives.filter((i) => i.slug !== "mobius");
+  const items = labsInitiatives.filter((i) => ["noit", "evaluation-harness", "workflow-orchestration-patterns"].includes(i.slug));
   return (
-    <Section canvas="dark" labelledBy="labs-title">
-      <Container className="grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="flex flex-col gap-8 lg:col-span-5">
-          <SectionHeader eyebrow="08 · Labs" id="labs-title" title={labsIntro.headline} lede={labsIntro.body} />
-          <TextLink href="/labs" event="labs_view">
+    <SectionFrame id="labs" code="07" title="Labs" state="Reusable technology" stateStage="operate" canvas="dark" grid>
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+        <div className="reveal lg:col-span-5">
+          <h2 id="labs-title" className="text-display-xl max-w-[14ch]">
+            Repeated engineering knowledge becomes reusable technology.
+          </h2>
+          <Link href="/labs" data-event="labs_view" className="mt-6 inline-block text-small font-medium underline underline-offset-4">
             Inside Labs
-          </TextLink>
-          <div className="mt-auto hidden lg:block">
-            <LogoMark size={96} variant="mono" className="text-text-primary opacity-30" decorative />
+          </Link>
+          <div className="mt-10 hidden lg:block">
+            <LogoMark size={72} variant="mono" className="text-text-primary opacity-25" decorative />
           </div>
         </div>
-        <ul className="grid gap-px overflow-hidden rounded-lg border border-border-subtle bg-border-subtle sm:grid-cols-2 lg:col-span-7">
-          {items.map((i) => (
-            <li key={i.slug} className="reveal flex flex-col gap-3 bg-surface-primary p-6">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-heading-sm font-semibold">{i.name}</h3>
-                <Tag stage={i.kind === "product" ? "discover" : "neutral"}>{i.status}</Tag>
-              </div>
+        <ul className="border-t border-border-strong lg:col-span-7">
+          {items.map((i, idx) => (
+            <li key={i.slug} className="reveal grid gap-2 border-b border-border-subtle py-5 sm:grid-cols-[12rem_1fr_auto] sm:items-baseline sm:gap-6" style={{ ["--reveal-delay" as string]: `${idx * 80}ms` }}>
+              <h3 className="text-heading-sm font-semibold">{i.name}</h3>
               <p className="text-small text-text-secondary">{i.summary}</p>
+              <Tag stage={i.kind === "product" ? "discover" : "operate"}>{i.status}</Tag>
             </li>
           ))}
         </ul>
-      </Container>
-    </Section>
+      </div>
+    </SectionFrame>
   );
 }

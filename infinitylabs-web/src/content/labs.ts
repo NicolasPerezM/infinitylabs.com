@@ -16,6 +16,7 @@ export type LabsInitiative = {
 
 export const labsIntro = {
   headline: "Labs turns repeated engineering knowledge into reusable technology.",
+  short: "Every system teaches us something about evaluation, orchestration, documents or data. Labs turns those lessons into accelerators, experiments and, when they earn it, products.",
   body: "Every system we build teaches us something about evaluation, orchestration, documents or data. Labs is where those lessons become accelerators, experiments and, when they earn it, products. It is also where we test what we are not yet ready to promise to a client.",
 };
 

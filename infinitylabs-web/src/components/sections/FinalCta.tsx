@@ -1,27 +1,26 @@
 import { ArrowIcon, Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
+import { SectionFrame } from "@/components/ui/SectionFrame";
 import { primaryCta, site } from "@/content/site";
 
-type Props = { title?: string; body?: string; eyebrow?: string };
+type Props = { title?: string; body?: string; code?: string; id?: string };
 
 export function FinalCta({
-  eyebrow = "13 · Next step",
+  id = "next",
+  code = "09",
   title = "Where would an intelligent system change your operation first?",
-  body = "Start with an AI Opportunity Sprint, or book a 30-minute conversation to describe the process you have in mind.",
+  body = "Start with an AI Opportunity Sprint, or book a 30-minute conversation about the process you have in mind.",
 }: Props) {
   return (
-    <Section canvas="dark" labelledBy="final-cta-title" rail>
-      <Container className="grid gap-8 lg:grid-cols-12 lg:items-center">
-        <div className="reveal flex flex-col gap-4 lg:col-span-8">
-          <span className="label-mono text-text-tertiary">{eyebrow}</span>
-          <h2 id="final-cta-title" className="text-display-xl max-w-[20ch]">
+    <SectionFrame id={id} code={code} title="Next step" state="Start" canvas="dark">
+      <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div className="reveal lg:col-span-8">
+          <h2 id={`${id}-title`} className="text-display-2xl max-w-[18ch]">
             {title}
           </h2>
-          <p className="text-body-lg prose-measure text-text-secondary">{body}</p>
+          <p className="mt-5 max-w-[52ch] text-body-lg text-text-secondary">{body}</p>
         </div>
         <div className="reveal flex flex-col gap-3 lg:col-span-4 lg:items-end" style={{ ["--reveal-delay" as string]: "120ms" }}>
-          <Button href={primaryCta.href} event="opportunity_sprint_cta" size="lg" variant="inverse" className="w-full sm:w-auto">
+          <Button href={primaryCta.href} event="opportunity_sprint_cta" size="lg" className="w-full sm:w-auto">
             {primaryCta.label}
             <ArrowIcon />
           </Button>
@@ -29,7 +28,7 @@ export function FinalCta({
             Book a 30-minute conversation
           </Button>
         </div>
-      </Container>
-    </Section>
+      </div>
+    </SectionFrame>
   );
 }

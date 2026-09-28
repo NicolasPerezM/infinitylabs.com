@@ -153,3 +153,17 @@ Body text ≥ 16 px; AA on every token pair listed above; focus ring 2 px `--foc
 
 Do: light canvas by default · dark canvas for systems in operation · symbol untouched · gradient only as Discover→Build→Operate · mono for system labels · diagrams over illustrations · specific copy · honest gaps.
 Don't: recolor or rotate the symbol · gradient text · glow · robots · logo walls without permission · invented metrics · "Infinity Lab" · pills and blobs · more than two font families.
+
+---
+
+## 12. v1.0 addendum — engineering-drawing system (2026-09-28)
+
+Following the UX/UI research (`docs/UX_UI_AUDIT.md`), the web system was pushed from "clean SaaS" to an ownable grammar:
+
+- **Colorimetry**: paper is now warm bone (`#F7F5F0` / `#EFECE4` / borders `#E4E0D6`, `#D2CDC0`) against cool indigo-black ink. Text tokens re-verified: primary 17.3:1, secondary 7.9:1, tertiary 5.4:1, accent 8.2:1; deep state text ≥ 4.5:1 on both papers. No shadows anywhere; radii 2–12 px.
+- **Signature gesture**: the operating loop as a plotter ribbon (24 ink strands, one Möbius twist, pointer displacement, colour packets in the only permitted order). Nodes are drawn on canvas; labels are HTML for crispness and accessibility.
+- **Drafting frame**: every section is a bounded module with a hairline that draws in, corner crosshairs and a mono readout (`03 / OPERATING MODEL · STATE BUILD`). The header shows the active section; a fixed rail carries progress and nodes on wide screens.
+- **Typography behaviour**: headlines settle (masked rise + weight 300→600, 45 ms stagger). Hero scale `clamp(2.9rem, 8vw, 7.4rem)` at −0.045em.
+- **Buttons**: monochrome (ink on paper / paper on ink) with the state-gradient rail sweeping in on hover. The gradient never appears as a fill.
+- **Diagrams in motion**: the typed workflow runs a packet; steps light up in their type colour as it passes; runs only while visible; off under reduced motion.
+- **Text**: home ≤ 900 words; one sentence per section question; lists carry detail.

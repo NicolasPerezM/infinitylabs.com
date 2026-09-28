@@ -37,14 +37,14 @@ If no delivery variable is set, the contact form validates and then offers a pre
 ```
 src/app          routes (App Router), metadata files, sitemap/robots/manifest/OG image
 src/content      typed content modules: site, navigation, operating model, solutions, capabilities, offers, principles, labs, team, industries, proof
-src/components   ui (primitives) · brand (LogoMark, Lockup) · system (OperatingLoop, WorkflowDiagram, ProcessFlow) · sections · layout
+src/components   ui (primitives, SectionFrame, SplitWords) · brand (LogoMark, Lockup) · system (RibbonField, SiteRail, OperatingLoop, WorkflowDiagram, ProcessFlow) · sections · layout
 src/lib          seo helpers, analytics adapter, contact validation/delivery, utils
 public/brand     served logo files (approved symbol + mono treatments)
 brand/           source assets and the brand research (not served)
 docs/            audit, architecture, brand implementation, decisions, content gaps, analytics, Möbius, launch checklist
 ```
 
-Design tokens live in `src/app/globals.css` (Tailwind v4 `@theme`), with a light canvas by default and a `.theme-dark` scope for "system" sections. See `docs/BRAND_IMPLEMENTATION.md`.
+Design tokens live in `src/app/globals.css` (Tailwind v4 `@theme`), with a warm-paper canvas by default and a `.theme-dark` scope for "system" sections. The visual system ("engineering drawing": plotter ribbon hero, section frames, site rail, typed workflows, word settle) is documented in `docs/BRAND_IMPLEMENTATION.md` §12 and the research behind it in `docs/UX_UI_AUDIT.md`. No animation or UI library is used: canvas 2D, CSS and SVG only.
 
 Content rules: nothing renders as proof (clients, case studies, testimonials, team) unless its content entry is `verified: true`. Gaps are tracked in `docs/CONTENT_GAPS.md`.
 
@@ -55,4 +55,4 @@ Content rules: nothing renders as proof (clients, case studies, testimonials, te
 
 ## Documentation
 
-`docs/SITE_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`
+`docs/SITE_AUDIT.md` · `docs/UX_UI_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`

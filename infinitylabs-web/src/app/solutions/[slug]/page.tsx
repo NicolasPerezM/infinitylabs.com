@@ -139,7 +139,7 @@ export default async function SolutionPage({ params }: Props) {
         </Container>
       </Section>
 
-      <FinalCta eyebrow="Next step" title={`Is ${s.name.toLowerCase()} the process to start with?`} body="A Sprint scores it against the other opportunities in your operation, or we can go straight to a scoped build if the case is clear." />
+      <FinalCta title={`Is ${s.name.toLowerCase()} the process to start with?`} body="A Sprint scores it against the other opportunities in your operation, or we can go straight to a scoped build if the case is clear." />
     </>
   );
 }

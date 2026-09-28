@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Infinity Labs design tokens (provisional v0.9 — see docs/BRAND_IMPLEMENTATION.md)
+   Infinity Labs design tokens v1.0 — "engineering drawing" system
+   (docs/BRAND_IMPLEMENTATION.md, docs/UX_UI_AUDIT.md)
    Primitives are fixed; semantic tokens switch per canvas (.theme-dark).
 ------------------------------------------------------------------- */
 
 @custom-variant dark (&:where(.theme-dark, .theme-dark *));
 
 :root {
-  /* primitives: ink + paper */
+  /* primitives: ink (cool indigo-black) + paper (warm bone) */
   --ink-950: #0a0b12;
   --ink-900: #12131c;
   --ink-800: #1b1d2a;
   --ink-700: #2b2e40;
   --ink-600: #3f4358;
   --paper-0: #ffffff;
-  --paper-50: #fafafc;
-  --paper-100: #f3f4f8;
-  --paper-200: #e8e9f0;
-  --paper-300: #d6d8e2;
+  --paper-50: #f7f5f0;
+  --paper-100: #efece4;
+  --paper-200: #e4e0d6;
+  --paper-300: #d2cdc0;
 
   /* primitives: state colors (symbol-derived) */
   --state-discover: #a662e6;
@@ -26,18 +27,18 @@
   --state-operate: #5de7c8;
   --state-structure: #3e4190;
   --state-discover-deep: #6e36b8;
-  --state-build-deep: #176fb0;
-  --state-operate-deep: #0b7a63;
+  --state-build-deep: #146aa8;
+  --state-operate-deep: #0a705b;
   --state-structure-deep: #2f3170;
 
-  /* semantic: light canvas (default) */
+  /* semantic: paper canvas (default) */
   --surface-primary: var(--paper-50);
   --surface-secondary: var(--paper-100);
   --surface-elevated: var(--paper-0);
   --surface-inverse: var(--ink-950);
   --text-primary: #0f1020;
-  --text-secondary: #4a4e63;
-  --text-tertiary: #6b7088;
+  --text-secondary: #474b60;
+  --text-tertiary: #5f647c;
   --text-inverse: #f4f4f9;
   --border-subtle: var(--paper-200);
   --border-strong: var(--paper-300);
@@ -45,16 +46,17 @@
   --brand-accent-hover: #34377c;
   --brand-accent-contrast: #ffffff;
   --focus-ring: var(--state-structure);
-  --state-discover-soft: #f1e8fb;
-  --state-build-soft: #e4f3ff;
-  --state-operate-soft: #e0faf4;
-  --state-structure-soft: #e9e9f5;
+  --state-discover-soft: #efe4f8;
+  --state-build-soft: #dfeefb;
+  --state-operate-soft: #dcf4ec;
+  --state-structure-soft: #e5e4ef;
   --state-discover-text: var(--state-discover-deep);
   --state-build-text: var(--state-build-deep);
   --state-operate-text: var(--state-operate-deep);
   --state-structure-text: var(--state-structure);
-  --grid-line: rgba(15, 16, 32, 0.06);
-  --elevation-card: 0 1px 2px rgba(15, 16, 32, 0.04), 0 8px 24px -12px rgba(15, 16, 32, 0.12);
+  --grid-line: rgba(15, 16, 32, 0.07);
+  --hatch: rgba(15, 16, 32, 0.62);
+  --elevation-card: none;
   color-scheme: light;
 }
 
@@ -67,8 +69,8 @@
   --text-secondary: #b4b7c9;
   --text-tertiary: #9296ae;
   --text-inverse: #0f1020;
-  --border-subtle: #262939;
-  --border-strong: #3a3d52;
+  --border-subtle: #23263a;
+  --border-strong: #363a52;
   --brand-accent: #9d97ff;
   --brand-accent-hover: #b3aeff;
   --brand-accent-contrast: #0f1020;
@@ -82,16 +84,15 @@
   --state-operate-text: #8ff0da;
   --state-structure-text: #b3aeff;
   --grid-line: rgba(244, 244, 249, 0.07);
+  --hatch: rgba(244, 244, 249, 0.6);
   --elevation-card: none;
   color-scheme: dark;
 }
 
 @theme inline {
-  /* fonts (loaded via next/font in app/layout.tsx) */
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* semantic colors → utilities (bg-surface-primary, text-text-secondary, border-border-subtle …) */
   --color-surface-primary: var(--surface-primary);
   --color-surface-secondary: var(--surface-secondary);
   --color-surface-elevated: var(--surface-elevated);
@@ -126,50 +127,49 @@
   --color-paper-100: var(--paper-100);
   --color-paper-200: var(--paper-200);
 
-  /* radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 20px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 
-  /* shadow */
   --shadow-card: var(--elevation-card);
 
-  /* motion */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-system: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* layout */
-  --container-content: 72rem;
+  --container-content: 76rem;
   --container-prose: 42rem;
-  --spacing-gutter: clamp(1rem, 4vw, 2rem);
-  --spacing-section: clamp(4rem, 8vw, 7.5rem);
+  --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
+  --spacing-section: clamp(4.5rem, 9vw, 8.5rem);
   --spacing-section-sm: clamp(2.5rem, 5vw, 4.5rem);
 
-  /* type scale */
+  --text-hero: clamp(2.9rem, 7vw, 6.3rem);
+  --text-hero--line-height: 0.92;
+  --text-hero--letter-spacing: -0.045em;
   --text-display-2xl: clamp(2.75rem, 5.5vw, 4.75rem);
-  --text-display-2xl--line-height: 0.98;
-  --text-display-2xl--letter-spacing: -0.03em;
+  --text-display-2xl--line-height: 0.96;
+  --text-display-2xl--letter-spacing: -0.035em;
   --text-display-xl: clamp(2.25rem, 4.5vw, 3.75rem);
-  --text-display-xl--line-height: 1.02;
-  --text-display-xl--letter-spacing: -0.025em;
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.03em;
   --text-display-lg: clamp(1.75rem, 3vw, 2.5rem);
-  --text-display-lg--line-height: 1.1;
-  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--line-height: 1.06;
+  --text-display-lg--letter-spacing: -0.025em;
   --text-heading: 1.375rem;
-  --text-heading--line-height: 1.25;
-  --text-heading--letter-spacing: -0.01em;
+  --text-heading--line-height: 1.2;
+  --text-heading--letter-spacing: -0.015em;
   --text-heading-sm: 1.125rem;
-  --text-heading-sm--line-height: 1.35;
+  --text-heading-sm--line-height: 1.3;
   --text-body-lg: 1.125rem;
-  --text-body-lg--line-height: 1.6;
+  --text-body-lg--line-height: 1.55;
   --text-body: 1rem;
   --text-body--line-height: 1.6;
   --text-small: 0.875rem;
   --text-small--line-height: 1.5;
-  --text-label: 0.75rem;
+  --text-label: 0.72rem;
   --text-label--line-height: 1.4;
-  --text-label--letter-spacing: 0.12em;
+  --text-label--letter-spacing: 0.14em;
 }
 
 /* ------------------------------------------------------------------
@@ -213,6 +213,12 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  a,
+  button,
+  summary {
+    cursor: pointer;
   }
 
   a {
@@ -263,40 +269,156 @@
 }
 
 @utility prose-measure {
-  max-width: 68ch;
+  max-width: 62ch;
 }
 
-/* scroll reveal (progressive enhancement; content visible without JS) */
-@utility reveal {
-  opacity: 1;
-  transform: none;
+/* Hairline that draws in from the left when it enters the viewport. */
+@utility rule {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: var(--border-strong);
+  transform-origin: left center;
+}
+
+/* Text block sitting over a system graphic: soft paper halo, no box. */
+@utility text-halo {
+  background: radial-gradient(70% 70% at 35% 50%, var(--surface-primary) 30%, transparent 100%);
+}
+
+/* Grid that only shows near the pointer (observability metaphor). */
+@utility grid-reveal {
+  --mx: 50%;
+  --my: 50%;
+  mask-image: radial-gradient(260px circle at var(--mx) var(--my), black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(260px circle at var(--mx) var(--my), black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 100%);
 }
 
 @layer utilities {
+  /* scroll reveals (progressive enhancement; content visible without JS) */
   .js .reveal {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
     transition:
-      opacity 0.6s var(--ease-out-quart),
-      transform 0.6s var(--ease-out-quart);
+      opacity 0.7s var(--ease-expo),
+      transform 0.7s var(--ease-expo);
     transition-delay: var(--reveal-delay, 0ms);
   }
   .js .reveal.is-visible {
     opacity: 1;
     transform: none;
   }
+  .js .rule {
+    transform: scaleX(0);
+    transition: transform 1s var(--ease-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .js .rule.is-visible {
+    transform: scaleX(1);
+  }
+
+  /* headline words settle: masked rise + variable weight */
+  .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+  .word-inner {
+    display: inline-block;
+    will-change: transform;
+  }
+  .js .word-inner {
+    transform: translateY(108%);
+    opacity: 0;
+    animation: word-in 1s var(--ease-expo) forwards;
+    animation-delay: calc(var(--i, 0) * 45ms + var(--word-delay, 0ms));
+  }
+
+  /* typed workflow: packet + step activation, pure CSS, synced by negative delays */
+  .wf-track {
+    --wf-cycle: 7.2s;
+  }
+  .wf-packet {
+    animation: wf-travel-x var(--wf-cycle) linear infinite;
+    animation-play-state: paused;
+  }
+  .wf-step {
+    animation: wf-step var(--wf-cycle) linear infinite;
+    animation-play-state: paused;
+    animation-delay: calc(var(--i, 0) * (var(--wf-cycle) / var(--n, 6)) * -1);
+  }
+  .is-visible .wf-packet,
+  .is-visible .wf-step {
+    animation-play-state: running;
+  }
+  @media (max-width: 47.99rem) {
+    .wf-packet {
+      animation-name: wf-travel-y;
+    }
+  }
+  .wf-vertical .wf-packet {
+    animation-name: wf-travel-y;
+  }
+
+  /* operating loop: active segment emphasis */
+  .loop-seg {
+    transition: opacity 0.6s var(--ease-expo), stroke-width 0.6s var(--ease-expo);
+  }
+  [data-active] .loop-seg:not([data-seg-active="true"]) {
+    opacity: 0.22;
+  }
+  [data-active] .loop-seg[data-seg-active="true"] {
+    stroke-width: 4.5;
+  }
+  .loop-node {
+    transition: transform 0.6s var(--ease-expo);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .loop-node[data-node-active="true"] {
+    transform: scale(1.6);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .js .reveal {
+    .js .reveal,
+    .js .rule {
       opacity: 1;
       transform: none;
       transition: none;
+    }
+    .js .word-inner {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+    .wf-packet,
+    .wf-step {
+      animation: none;
     }
   }
 }
 
 /* ------------------------------------------------------------------
-   Keyframes used by system graphics
+   Keyframes
 ------------------------------------------------------------------- */
+
+@keyframes word-in {
+  0% {
+    transform: translateY(108%);
+    opacity: 0;
+    font-weight: 300;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    font-weight: 600;
+  }
+}
 
 @keyframes draw-path {
   from {
@@ -304,15 +426,6 @@
   }
   to {
     stroke-dashoffset: 0;
-  }
-}
-
-@keyframes travel {
-  from {
-    offset-distance: 0%;
-  }
-  to {
-    offset-distance: 100%;
   }
 }
 
@@ -332,5 +445,51 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes wf-travel-x {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes wf-travel-y {
+  from {
+    top: 0%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes wf-step {
+  0% {
+    border-color: var(--wf-color, var(--border-strong));
+    background-color: var(--wf-soft, transparent);
+  }
+  14% {
+    border-color: var(--wf-color, var(--border-strong));
+    background-color: var(--wf-soft, transparent);
+  }
+  22%,
+  100% {
+    border-color: var(--border-strong);
+    background-color: var(--surface-elevated);
+  }
+}
+
+@keyframes tick {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.3;
   }
 }
