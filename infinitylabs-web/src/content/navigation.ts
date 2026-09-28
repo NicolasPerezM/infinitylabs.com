@@ -1,51 +1,37 @@
-export type NavItem = { label: string; href: string; description?: string };
+import { href, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getCapabilities } from "./capabilities";
+import { getSolutions } from "./solutions";
 
-/** Primary navigation. Routes without verified content are intentionally absent (DEC-004). */
-export const primaryNav: NavItem[] = [
-  { label: "Solutions", href: "/solutions" },
-  { label: "Capabilities", href: "/capabilities" },
-  { label: "Offers", href: "/offers" },
-  { label: "Labs", href: "/labs" },
-  { label: "About", href: "/about" },
-];
+export type NavItem = { label: string; href: string };
 
-export const headerCta = { label: "Start a Sprint", href: "/contact?intent=sprint", event: "nav_cta" } as const;
-
-export const footerColumns: { heading: string; items: NavItem[] }[] = [
-  {
-    heading: "Solutions",
-    items: [
-      { label: "Enterprise Knowledge", href: "/solutions/knowledge-ai" },
-      { label: "Document Intelligence", href: "/solutions/document-intelligence" },
-      { label: "Customer Operations", href: "/solutions/customer-operations" },
-      { label: "Revenue Systems", href: "/solutions/revenue-systems" },
-      { label: "Intelligent Operations", href: "/solutions/intelligent-operations" },
-    ],
-  },
-  {
-    heading: "Capabilities",
-    items: [
-      { label: "AI Transformation", href: "/capabilities/ai-transformation" },
-      { label: "AI Engineering", href: "/capabilities/ai-engineering" },
-      { label: "Agentic Systems", href: "/capabilities/agentic-systems" },
-      { label: "Data + AI", href: "/capabilities/data-ai" },
-      { label: "AI Evaluation", href: "/capabilities/ai-evaluation" },
-      { label: "Managed AI", href: "/capabilities/managed-ai" },
-    ],
-  },
-  {
-    heading: "Company",
-    items: [
-      { label: "Offers", href: "/offers" },
-      { label: "AI Opportunity Sprint", href: "/offers/ai-opportunity-sprint" },
-      { label: "Labs", href: "/labs" },
-      { label: "About", href: "/about" },
-      { label: "Contact", href: "/contact" },
-    ],
-  },
-];
-
-export const legalNav: NavItem[] = [
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-];
+export function getNavigation(locale: Locale) {
+  const d = getDictionary(locale);
+  const primaryNav: NavItem[] = [
+    { label: d.nav.solutions, href: href(locale, "/solutions") },
+    { label: d.nav.capabilities, href: href(locale, "/capabilities") },
+    { label: d.nav.offers, href: href(locale, "/offers") },
+    { label: d.nav.labs, href: href(locale, "/labs") },
+    { label: d.nav.about, href: href(locale, "/about") },
+  ];
+  const headerCta = { label: d.nav.cta, href: href(locale, "/contact?intent=sprint"), event: "nav_cta" };
+  const footerColumns: { heading: string; items: NavItem[] }[] = [
+    { heading: d.footer.solutions, items: getSolutions(locale).map((s) => ({ label: s.name, href: href(locale, `/solutions/${s.slug}`) })) },
+    { heading: d.footer.capabilities, items: getCapabilities(locale).map((c) => ({ label: c.name, href: href(locale, `/capabilities/${c.slug}`) })) },
+    {
+      heading: d.footer.company,
+      items: [
+        { label: d.nav.offers, href: href(locale, "/offers") },
+        { label: d.footer.sprint, href: href(locale, "/offers/ai-opportunity-sprint") },
+        { label: d.nav.labs, href: href(locale, "/labs") },
+        { label: d.nav.about, href: href(locale, "/about") },
+        { label: d.nav.contact, href: href(locale, "/contact") },
+      ],
+    },
+  ];
+  const legalNav: NavItem[] = [
+    { label: d.footer.privacy, href: href(locale, "/privacy") },
+    { label: d.footer.terms, href: href(locale, "/terms") },
+  ];
+  return { primaryNav, headerCta, footerColumns, legalNav };
+}

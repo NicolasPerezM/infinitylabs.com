@@ -1,71 +1,59 @@
 import type { Metadata } from "next";
-import { site } from "@/content/site";
+import { href, locales, ogLocale, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import { siteFacts } from "@/content/site";
 
-type PageMeta = {
-  title: string;
-  description: string;
-  path: string;
-  /** Exclude from index (used for placeholder legal pages). */
-  noIndex?: boolean;
-};
+type PageMeta = { title: string; description: string; path: string; noIndex?: boolean };
 
-export function buildMetadata({ title, description, path, noIndex }: PageMeta): Metadata {
-  const url = new URL(path, site.url).toString();
+const abs = (locale: Locale, path: string) => new URL(href(locale, path), siteFacts.url).toString();
+
+export function languageAlternates(path: string): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const l of locales) map[l] = abs(l, path);
+  map["x-default"] = abs("es", path);
+  return map;
+}
+
+export function buildMetadata(locale: Locale, { title, description, path, noIndex }: PageMeta): Metadata {
+  const url = abs(locale, path);
   return {
     title,
     description,
-    alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: site.name,
-      type: "website",
-      locale: "en_US",
-    },
+    alternates: { canonical: url, languages: languageAlternates(path) },
+    openGraph: { title, description, url, siteName: siteFacts.name, type: "website", locale: ogLocale[locale] },
     twitter: { card: "summary_large_image", title, description },
     robots: noIndex ? { index: false, follow: true } : undefined,
   };
 }
 
-export function organizationJsonLd() {
+export function organizationJsonLd(locale: Locale) {
+  const d = getDictionary(locale);
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: site.name,
-    ...(site.legalName ? { legalName: site.legalName } : {}),
-    url: site.url,
-    logo: new URL("/brand/infinity-labs-symbol.svg", site.url).toString(),
-    email: site.email,
-    description: site.description,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: site.address.street,
-      addressCountry: "CO",
-    },
-    sameAs: [site.social.linkedin, site.social.instagram],
-    knowsAbout: [
-      "AI transformation",
-      "AI engineering",
-      "Agentic workflows",
-      "Enterprise knowledge systems",
-      "Document intelligence",
-      "AI evaluation",
-      "Managed AI",
-    ],
+    name: siteFacts.name,
+    ...(siteFacts.legalName ? { legalName: siteFacts.legalName } : {}),
+    url: siteFacts.url,
+    logo: new URL("/brand/infinity-labs-symbol.svg", siteFacts.url).toString(),
+    email: siteFacts.email,
+    description: d.meta.description,
+    address: { "@type": "PostalAddress", streetAddress: siteFacts.address.street, addressCountry: "CO" },
+    sameAs: [siteFacts.social.linkedin, siteFacts.social.instagram],
+    knowsAbout: ["AI transformation", "AI engineering", "Agentic workflows", "Enterprise knowledge systems", "Document intelligence", "AI evaluation", "Managed AI"],
   };
 }
 
-export function serviceJsonLd(input: { name: string; description: string; path: string; type?: string }) {
+export function serviceJsonLd(locale: Locale, input: { name: string; description: string; path: string; type?: string }) {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
     name: input.name,
-    serviceType: input.type ?? "AI Transformation & Engineering",
+    serviceType: input.type ?? getDictionary(locale).meta.category,
     description: input.description,
-    url: new URL(input.path, site.url).toString(),
-    provider: { "@type": "Organization", name: site.name, url: site.url },
-    areaServed: ["CO", "US", "CA", "LATAM"],
+    url: abs(locale, input.path),
+    provider: { "@type": "Organization", name: siteFacts.name, url: siteFacts.url },
+    areaServed: ["CO", "US", "CA", "FR", "LATAM"],
+    inLanguage: locale,
   };
 }
 
@@ -73,23 +61,14 @@ export function faqJsonLd(items: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: items.map((i) => ({
-      "@type": "Question",
-      name: i.question,
-      acceptedAnswer: { "@type": "Answer", text: i.answer },
-    })),
+    mainEntity: items.map((i) => ({ "@type": "Question", name: i.question, acceptedAnswer: { "@type": "Answer", text: i.answer } })),
   };
 }
 
-export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+export function breadcrumbJsonLd(locale: Locale, items: { name: string; path: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: items.map((item, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: item.name,
-      item: new URL(item.path, site.url).toString(),
-    })),
+    itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.name, item: abs(locale, item.path) })),
   };
 }

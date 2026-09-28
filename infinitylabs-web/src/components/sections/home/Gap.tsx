@@ -1,26 +1,24 @@
 import { SectionFrame } from "@/components/ui/SectionFrame";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 
-const pilot = ["Runs on sample data", "Lives outside your systems", "Judged by a demo", "No owner after the demo"];
-const system = ["Connected to permissions and records", "Typed steps: code, AI, agents, people", "Evaluated on every change", "Operated by a named team"];
-
-/** 02 · The operational gap. Ledger, not paragraphs. */
-export function Gap() {
+/** The operational gap: a ledger, not paragraphs. */
+export function Gap({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).home.gap;
   return (
-    <SectionFrame id="gap" code="02" title="The operational gap" state="Why engineering" canvas="secondary">
+    <SectionFrame id="gap" title={t.title} state={t.state} canvas="secondary">
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
         <div className="reveal lg:col-span-6">
-          <h2 id="gap-title" className="text-display-xl max-w-[16ch]">
-            Most companies have AI experiments. Few have AI running inside operations.
-          </h2>
-          <p className="mt-5 text-body-lg text-text-secondary">The gap is not intelligence. It is engineering.</p>
+          <h2 id="gap-title" className="text-display-xl max-w-[16ch]">{t.headline}</h2>
+          <p className="mt-5 text-body-lg text-text-secondary">{t.line}</p>
         </div>
         <div className="reveal lg:col-span-6" style={{ ["--reveal-delay" as string]: "120ms" }}>
           <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-x-3 sm:gap-x-6">
-            <Column heading="A pilot" items={pilot} muted />
+            <Column heading={t.pilot} items={t.pilotItems} muted />
             <div aria-hidden className="flex flex-col items-center justify-center">
               <span className="h-full w-px state-gradient-vertical" />
             </div>
-            <Column heading="A production system" items={system} />
+            <Column heading={t.system} items={t.systemItems} />
           </div>
         </div>
       </div>

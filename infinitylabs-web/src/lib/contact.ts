@@ -1,14 +1,19 @@
+import { en } from "@/i18n/dictionaries/en";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+
 /**
  * Contact form domain logic: validation + provider-agnostic delivery (DEC-010).
- * Delivery providers (first configured wins):
+ * Option values are canonical English (from the `en` dictionary) so CRM data stays consistent;
+ * labels are localized by the form. Providers (first configured wins):
  *  - CONTACT_WEBHOOK_URL            → POST JSON (CRM, Zapier/Make, n8n, Slack webhook…)
  *  - RESEND_API_KEY + CONTACT_TO    → email via Resend HTTP API (no SDK)
- *  - none                           → returns { delivered: false } so the UI can show the direct email path
+ *  - none                           → { delivered: false } so the UI shows the direct email path
  */
 
-export const PROJECT_STAGES = ["Exploring where AI applies", "Have a specific process in mind", "A pilot exists", "Systems in production"] as const;
-export const TIMELINES = ["This quarter", "Next quarter", "This year", "Not defined"] as const;
-export const COMPANY_SIZES = ["< 50", "50–250", "250–1,000", "1,000–5,000", "> 5,000"] as const;
+export const PROJECT_STAGES = en.contact.options.stages;
+export const TIMELINES = en.contact.options.timelines;
+export const COMPANY_SIZES = en.contact.options.sizes;
 export const INTENTS = ["sprint", "agentic-workflow-systems", "enterprise-knowledge-document-ai", "managed-ai", "general"] as const;
 
 export type ContactInput = {
@@ -23,6 +28,7 @@ export type ContactInput = {
   timeline: string;
   intent: string;
   consent: boolean;
+  locale: Locale;
 };
 
 export type FieldErrors = Partial<Record<keyof ContactInput, string>>;
@@ -30,16 +36,17 @@ export type FieldErrors = Partial<Record<keyof ContactInput, string>>;
 const FREE_MAIL = /@(gmail|hotmail|outlook|yahoo|icloud|live|proton|protonmail)\./i;
 
 export function validate(input: ContactInput): FieldErrors {
+  const m = getDictionary(input.locale).contact.errors;
   const e: FieldErrors = {};
-  if (input.name.trim().length < 2) e.name = "Please enter your name.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.email)) e.email = "Please enter a valid email address.";
-  else if (FREE_MAIL.test(input.email)) e.email = "Please use your work email so we can route the request correctly.";
-  if (input.company.trim().length < 2) e.company = "Please enter your company.";
-  if (input.role.trim().length < 2) e.role = "Please enter your role.";
-  if (input.improve.trim().length < 20) e.improve = "A sentence or two helps us prepare: which process, what is slow or costly today.";
-  if (!PROJECT_STAGES.includes(input.stage as (typeof PROJECT_STAGES)[number])) e.stage = "Please select a stage.";
-  if (!TIMELINES.includes(input.timeline as (typeof TIMELINES)[number])) e.timeline = "Please select a timeline.";
-  if (!input.consent) e.consent = "Please confirm we may contact you about this request.";
+  if (input.name.trim().length < 2) e.name = m.name;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.email)) e.email = m.email;
+  else if (FREE_MAIL.test(input.email)) e.email = m.workEmail;
+  if (input.company.trim().length < 2) e.company = m.company;
+  if (input.role.trim().length < 2) e.role = m.role;
+  if (input.improve.trim().length < 20) e.improve = m.improve;
+  if (!(PROJECT_STAGES as readonly string[]).includes(input.stage)) e.stage = m.stage;
+  if (!(TIMELINES as readonly string[]).includes(input.timeline)) e.timeline = m.timeline;
+  if (!input.consent) e.consent = m.consent;
   return e;
 }
 
@@ -50,7 +57,6 @@ export async function deliver(input: ContactInput, meta: { userAgent?: string; r
   const resendKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO;
   const from = process.env.CONTACT_FROM ?? "Infinity Labs Website <no-reply@infinitylabscol.com>";
-
   const payload = { source: "infinitylabs-web/contact", ...input, ...meta };
 
   if (webhook) {
@@ -58,11 +64,8 @@ export async function deliver(input: ContactInput, meta: { userAgent?: string; r
     if (!res.ok) return { delivered: false, provider: "webhook", error: `webhook ${res.status}` };
     return { delivered: true, provider: "webhook" };
   }
-
   if (resendKey && to) {
-    const text = Object.entries(payload)
-      .map(([k, v]) => `${k}: ${String(v ?? "")}`)
-      .join("\n");
+    const text = Object.entries(payload).map(([k, v]) => `${k}: ${String(v ?? "")}`).join("\n");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
@@ -71,6 +74,5 @@ export async function deliver(input: ContactInput, meta: { userAgent?: string; r
     if (!res.ok) return { delivered: false, provider: "resend", error: `resend ${res.status}` };
     return { delivered: true, provider: "resend" };
   }
-
   return { delivered: false, provider: "none" };
 }

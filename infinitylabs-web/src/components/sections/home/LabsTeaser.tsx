@@ -2,21 +2,20 @@ import Link from "next/link";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { SectionFrame } from "@/components/ui/SectionFrame";
 import { Tag } from "@/components/ui/Tag";
-import { labsInitiatives } from "@/content/labs";
+import { getLabs } from "@/content/labs";
+import { href, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 
-/** 07 · Labs: three lines, honest status, one link. */
-export function LabsTeaser() {
-  const items = labsInitiatives.filter((i) => ["noit", "evaluation-harness", "workflow-orchestration-patterns"].includes(i.slug));
+/** Labs: three lines, honest status, one link. */
+export function LabsTeaser({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).home.labs;
+  const items = getLabs(locale).initiatives.filter((i) => ["noit", "evaluation-harness", "workflow-orchestration-patterns"].includes(i.slug));
   return (
-    <SectionFrame id="labs" code="07" title="Labs" state="Reusable technology" stateStage="operate" canvas="dark" grid>
+    <SectionFrame id="labs" title={t.title} state={t.state} stateStage="operate" canvas="dark" grid>
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
         <div className="reveal lg:col-span-5">
-          <h2 id="labs-title" className="text-display-xl max-w-[14ch]">
-            Repeated engineering knowledge becomes reusable technology.
-          </h2>
-          <Link href="/labs" data-event="labs_view" className="mt-6 inline-block text-small font-medium underline underline-offset-4">
-            Inside Labs
-          </Link>
+          <h2 id="labs-title" className="text-display-xl max-w-[14ch]">{t.headline}</h2>
+          <Link href={href(locale, "/labs")} data-event="labs_view" className="mt-6 inline-block text-small font-medium underline underline-offset-4">{t.inside}</Link>
           <div className="mt-10 hidden lg:block">
             <LogoMark size={72} variant="mono" className="text-text-primary opacity-25" decorative />
           </div>

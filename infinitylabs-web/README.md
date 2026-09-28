@@ -32,12 +32,19 @@ pnpm dev                     # http://localhost:3000
 
 If no delivery variable is set, the contact form validates and then offers a pre-filled email to `info@infinitylabscol.com` instead of pretending to send. Never commit `.env.local`.
 
+## Languages and theme
+
+Routes are prefixed by locale: `/es` (default), `/en`, `/fr`. `src/proxy.ts` redirects unprefixed paths to the saved locale (cookie `il_locale`) or Spanish. UI strings live in `src/i18n/dictionaries/{es,en,fr}.ts`; content modules in `src/content/*` expose `getX(locale)`. Every page emits `hreflang` alternates and the sitemap lists all locales.
+
+The theme toggle (light · system · dark) is in the header; tokens for both themes live in `src/app/globals.css` under `[data-theme]`, with contrast verified in `docs/BRAND_IMPLEMENTATION.md` §13.
+
 ## Architecture overview
 
 ```
-src/app          routes (App Router), metadata files, sitemap/robots/manifest/OG image
+src/app          [locale]/ routes (App Router), sitemap/robots/manifest at the root, OG image per locale
+src/i18n         locale config, dictionaries (es/en/fr)
 src/content      typed content modules: site, navigation, operating model, solutions, capabilities, offers, principles, labs, team, industries, proof
-src/components   ui (primitives, SectionFrame, SplitWords) · brand (LogoMark, Lockup) · system (RibbonField, SiteRail, OperatingLoop, WorkflowDiagram, ProcessFlow) · sections · layout
+src/components   ui (primitives, SectionFrame, SplitWords) · brand (LogoMark, Lockup) · system (RibbonField, RibbonScene, SiteRail, WorkflowDiagram) · sections · layout
 src/lib          seo helpers, analytics adapter, contact validation/delivery, utils
 public/brand     served logo files (approved symbol + mono treatments)
 brand/           source assets and the brand research (not served)
@@ -55,4 +62,4 @@ Content rules: nothing renders as proof (clients, case studies, testimonials, te
 
 ## Documentation
 
-`docs/SITE_AUDIT.md` · `docs/UX_UI_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`
+`docs/SITE_AUDIT.md` · `docs/UX_UI_AUDIT.md` · `docs/COPY_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`

@@ -167,3 +167,23 @@ Following the UX/UI research (`docs/UX_UI_AUDIT.md`), the web system was pushed 
 - **Buttons**: monochrome (ink on paper / paper on ink) with the state-gradient rail sweeping in on hover. The gradient never appears as a fill.
 - **Diagrams in motion**: the typed workflow runs a packet; steps light up in their type colour as it passes; runs only while visible; off under reduced motion.
 - **Text**: home ≤ 900 words; one sentence per section question; lists carry detail.
+
+## 13. v1.1 addendum — languages, dark mode, single ribbon (2026-09-28)
+
+- **Languages**: Spanish (default), English, French. Stage names are translated (Descubrir · Construir · Operar / Découvrir · Construire · Opérer); product names are not (AI Opportunity Sprint, Managed AI, NOIT, Möbius). The switcher (ES · EN · FR) sits in the header and the mobile menu; the choice is remembered in a cookie.
+- **Dark mode**: page-level `[data-theme="dark"]` re-maps the same semantic tokens. Rhythm is kept with three ink levels: base `#0E0F17`, secondary `#14151F`, deeper "system" sections `#08090F`. Verified pairs (WCAG 2.2): primary text 15.3–18.1:1, secondary 8.4–10.0:1, tertiary 5.7–6.8:1, accent 6.6–7.9:1, state text ≥ 7.4:1, input borders ≥ 4.4:1. Light mode: primary 16.0–18.8:1, secondary 7.3–8.6:1, tertiary 4.9–5.8:1, state text ≥ 4.86:1, input borders ≥ 3.5:1.
+- **Ribbon v2**: depth shading (front/back face, wider when nearer), ruler ticks along the path, directional colour tail, node pulse when a packet passes, active-segment colouring for the operating model, theme-aware ink. The SVG loop is retired; the ribbon is the only system graphic.
+- **No numerals**: section frames show title and state only; the rail shows nodes with hover labels; the header readout shows the section name.
+
+## 14. Conflict C-13 — marketing practice vs. "not a marketing agency" (2026-09-28)
+
+**The conflict.** Business strategy §1 (rank 1) lists "marketing agency" and "generic digital agency" among the perceptions the site must move away from. The founder states that a marketing team is staffed and delivering, that the company builds or improves the whole digital environment, and that campaigns and strategy from brand to lead are part of the offer. Hiding that would be dishonest; presenting it as a services list would re-create the perception the strategy rejects.
+
+**Resolution.** Marketing enters the site as a **business system**, in the same grammar as every other system:
+
+- **Solution** `marketing-systems` — "From positioning to qualified lead, run as one measured system", with the same structure as the other five solutions (problem in the buyer's words, what we build, outcomes, typical environments, typed workflow).
+- **Capability** `growth-engineering` — the discipline that connects brand, presence, content, media and measurement, stated plainly as "a marketing team and an engineering team building one instrumented growth system".
+- **Offer** `digital-growth-system` — Diagnose → Build → Operate, so it is purchasable like everything else.
+- **Home section** "AI × digital marketing" — the brand→lead chain rendered as a typed workflow (market signals → positioning → site and content → creative variants → campaigns and bidding → qualified lead in CRM), beside two explicit columns: *what the team runs* and *what the AI layer adds*. This is the demonstration of how AI and digital marketing combine, in the site's own visual language.
+
+**What is deliberately absent:** channel logos, ROAS or conversion figures (none are client-approved, GAP-006), "growth hacking" vocabulary, and any claim that AI replaces the marketing team. The copy states the opposite: AI writes variants and drafts; people own positioning, brand and budget.

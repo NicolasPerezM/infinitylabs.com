@@ -1,39 +1,38 @@
 import type { NextConfig } from "next";
 
 /**
- * Legacy Webflow routes → new information architecture (301).
- * Keeps inbound links and search equity from the current live site.
+ * Legacy Webflow routes → new information architecture (301). Spanish is the default locale,
+ * and the legacy site was Spanish, so legacy paths land on /es.
  */
-const legacyRedirects = [
-  { source: "/index.html", destination: "/", permanent: true },
-  { source: "/nuestros-servicios", destination: "/solutions", permanent: true },
-  { source: "/nuestros-servicios.html", destination: "/solutions", permanent: true },
-  { source: "/nosotros", destination: "/about", permanent: true },
-  { source: "/nosotros.html", destination: "/about", permanent: true },
-  { source: "/our-process", destination: "/capabilities", permanent: true },
-  { source: "/our-process.html", destination: "/capabilities", permanent: true },
-  { source: "/contact-us-1", destination: "/contact", permanent: true },
-  { source: "/contact-us-1.html", destination: "/contact", permanent: true },
-  { source: "/contact-us-3", destination: "/contact", permanent: true },
-  { source: "/contact-us-3.html", destination: "/contact", permanent: true },
-  { source: "/growth-partner", destination: "/about", permanent: true },
-  { source: "/growth-partner.html", destination: "/about", permanent: true },
-  { source: "/mobius-chatbot", destination: "/labs", permanent: true },
-  { source: "/mobius-chatbot.html", destination: "/labs", permanent: true },
-  { source: "/landing-marketing", destination: "/", permanent: true },
-  { source: "/landing-marketing.html", destination: "/", permanent: true },
-  { source: "/blog", destination: "/", permanent: true },
-  { source: "/blog.html", destination: "/", permanent: true },
-  { source: "/career", destination: "/about", permanent: true },
-  { source: "/career.html", destination: "/about", permanent: true },
-  { source: "/faq", destination: "/offers/ai-opportunity-sprint", permanent: true },
-  { source: "/faq.html", destination: "/offers/ai-opportunity-sprint", permanent: true },
-  { source: "/testimonials", destination: "/", permanent: true },
-  { source: "/testimonials.html", destination: "/", permanent: true },
-  { source: "/pricing-2", destination: "/offers", permanent: true },
-  { source: "/pricing-3", destination: "/offers", permanent: true },
-  { source: "/home-:n(\\d)", destination: "/", permanent: true },
-  { source: "/old-home", destination: "/", permanent: true },
+const legacy: [string, string][] = [
+  ["/index.html", "/es"],
+  ["/nuestros-servicios", "/es/solutions"],
+  ["/nuestros-servicios.html", "/es/solutions"],
+  ["/nosotros", "/es/about"],
+  ["/nosotros.html", "/es/about"],
+  ["/our-process", "/es/capabilities"],
+  ["/our-process.html", "/es/capabilities"],
+  ["/contact-us-1", "/es/contact"],
+  ["/contact-us-1.html", "/es/contact"],
+  ["/contact-us-3", "/es/contact"],
+  ["/contact-us-3.html", "/es/contact"],
+  ["/growth-partner", "/es/about"],
+  ["/growth-partner.html", "/es/about"],
+  ["/mobius-chatbot", "/es/labs"],
+  ["/mobius-chatbot.html", "/es/labs"],
+  ["/landing-marketing", "/es"],
+  ["/landing-marketing.html", "/es"],
+  ["/blog", "/es"],
+  ["/blog.html", "/es"],
+  ["/career", "/es/about"],
+  ["/career.html", "/es/about"],
+  ["/faq", "/es/offers/ai-opportunity-sprint"],
+  ["/faq.html", "/es/offers/ai-opportunity-sprint"],
+  ["/testimonials", "/es"],
+  ["/testimonials.html", "/es"],
+  ["/pricing-2", "/es/offers"],
+  ["/pricing-3", "/es/offers"],
+  ["/old-home", "/es"],
 ];
 
 const securityHeaders = [
@@ -46,11 +45,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  images: {
-    formats: ["image/avif", "image/webp"],
-  },
+  images: { formats: ["image/avif", "image/webp"] },
   async redirects() {
-    return legacyRedirects;
+    return [
+      ...legacy.map(([source, destination]) => ({ source, destination, permanent: true })),
+      { source: "/home-:n(\\d)", destination: "/es", permanent: true },
+    ];
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

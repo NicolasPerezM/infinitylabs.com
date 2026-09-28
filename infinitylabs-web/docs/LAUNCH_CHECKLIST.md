@@ -31,6 +31,9 @@ Legend: ✅ done in repo · 🟡 done, needs founder confirmation · ⛔ blocked
 | 25 | Legacy redirects | ✅ | `next.config.ts` (301 from Webflow paths) |
 | 26 | Domain / DNS cut-over from Webflow | ⛔ | Founder decision; set `NEXT_PUBLIC_SITE_URL` |
 | 27 | Trademark clearance before NA push | ⛔ | GAP-002 |
+| 28 | Languages: `/es` default, `/en`, `/fr`; switcher; cookie preference; hreflang + x-default; sitemap × 3 | ✅ | DEC-021; French copy needs native review (GAP-015) |
+| 29 | Dark mode: light · system · dark toggle; tokens per theme; contrast verified in both themes (text ≥ 4.5:1, inputs ≥ 3:1) | ✅ | DEC-022; `docs/BRAND_IMPLEMENTATION.md` §13 |
+| 30 | Automated accessibility audit (axe) on key pages, both themes | ✅ | `docs/qa/README.md` |
 
 ## Pre-launch commands
 

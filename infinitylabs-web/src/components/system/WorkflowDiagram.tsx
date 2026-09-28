@@ -9,19 +9,22 @@ import { cn } from "@/lib/utils";
  * Horizontal on md+; vertical below md and always in `compact` mode (previews, narrow panels).
  */
 
-const KIND: Record<SolutionDiagramStep["kind"], { label: string; dot: string; color: string; soft: string }> = {
-  input: { label: "Input", dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
-  deterministic: { label: "Deterministic", dot: "bg-structure", color: "var(--state-structure)", soft: "var(--state-structure-soft)" },
-  ai: { label: "AI", dot: "bg-build", color: "var(--state-build)", soft: "var(--state-build-soft)" },
-  agent: { label: "Agent", dot: "bg-discover", color: "var(--state-discover)", soft: "var(--state-discover-soft)" },
-  human: { label: "Human approval", dot: "bg-operate", color: "var(--state-operate)", soft: "var(--state-operate-soft)" },
-  output: { label: "Output", dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
+const KIND_STYLE: Record<SolutionDiagramStep["kind"], { dot: string; color: string; soft: string }> = {
+  input: { dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
+  deterministic: { dot: "bg-structure", color: "var(--state-structure)", soft: "var(--state-structure-soft)" },
+  ai: { dot: "bg-build", color: "var(--state-build)", soft: "var(--state-build-soft)" },
+  agent: { dot: "bg-discover", color: "var(--state-discover)", soft: "var(--state-discover-soft)" },
+  human: { dot: "bg-operate", color: "var(--state-operate)", soft: "var(--state-operate-soft)" },
+  output: { dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
 };
 
-type Props = { steps: SolutionDiagramStep[]; title?: string; className?: string; legend?: boolean; caption?: string; compact?: boolean; animate?: boolean };
+export type KindLabels = Record<SolutionDiagramStep["kind"], string>;
 
-export function WorkflowDiagram({ steps, title = "Illustrative workflow", className, legend = true, caption, compact = false, animate = true }: Props) {
+type Props = { steps: SolutionDiagramStep[]; kinds: KindLabels; title: string; className?: string; legend?: boolean; caption?: string; compact?: boolean; animate?: boolean };
+
+export function WorkflowDiagram({ steps, kinds, title, className, legend = true, caption, compact = false, animate = true }: Props) {
   const n = steps.length;
+  const KIND = Object.fromEntries((Object.keys(KIND_STYLE) as SolutionDiagramStep["kind"][]).map((k) => [k, { ...KIND_STYLE[k], label: kinds[k] }])) as Record<SolutionDiagramStep["kind"], { label: string; dot: string; color: string; soft: string }>;
   const label = `${title}: ${steps.map((s) => `${s.label} (${KIND[s.kind].label})`).join(" → ")}`;
 
   if (compact) {
@@ -41,9 +44,9 @@ export function WorkflowDiagram({ steps, title = "Illustrative workflow", classN
                 style={{ ["--i" as string]: i, ["--wf-color" as string]: KIND[step.kind].color, ["--wf-soft" as string]: KIND[step.kind].soft } as CSSProperties}
               >
                 <span className="text-small font-medium text-text-primary">{step.label}</span>
-                <span className="label-mono flex shrink-0 items-center gap-1.5 text-text-tertiary">
-                  <span aria-hidden className={cn("inline-block size-1.5 rounded-full", KIND[step.kind].dot)} />
-                  {KIND[step.kind].label}
+                <span className="wf-kind flex shrink-0 items-center gap-1.5 text-right text-text-tertiary">
+                  <span aria-hidden className={cn("inline-block size-1.5 shrink-0 rounded-full", KIND[step.kind].dot)} />
+                  <span className="min-w-0">{KIND[step.kind].label}</span>
                 </span>
               </div>
             </li>
@@ -65,12 +68,12 @@ export function WorkflowDiagram({ steps, title = "Illustrative workflow", classN
         {steps.map((step, i) => (
           <li key={i} className="relative flex md:flex-col">
             <div
-              className={cn("wf-step relative z-10 flex min-h-[4.5rem] w-full flex-col justify-between gap-2 rounded-md border border-border-strong bg-surface-elevated p-3", (step.kind === "input" || step.kind === "output") && "border-dashed")}
+              className={cn("wf-step relative z-10 flex min-h-[5.25rem] w-full flex-col justify-between gap-2 rounded-md border border-border-strong bg-surface-elevated p-2.5", (step.kind === "input" || step.kind === "output") && "border-dashed")}
               style={{ ["--i" as string]: i, ["--wf-color" as string]: KIND[step.kind].color, ["--wf-soft" as string]: KIND[step.kind].soft } as CSSProperties}
             >
-              <span className="label-mono flex items-center gap-1.5 text-text-tertiary">
-                <span aria-hidden className={cn("inline-block size-1.5 rounded-full", KIND[step.kind].dot)} />
-                {KIND[step.kind].label}
+              <span className="wf-kind flex flex-wrap items-start gap-x-1.5 gap-y-0.5 text-text-tertiary">
+                <span aria-hidden className={cn("mt-1 inline-block size-1.5 shrink-0 rounded-full", KIND[step.kind].dot)} />
+                <span className="min-w-0 break-words">{KIND[step.kind].label}</span>
               </span>
               <span className="text-small font-medium leading-snug text-text-primary">{step.label}</span>
             </div>

@@ -6,7 +6,7 @@
    Primitives are fixed; semantic tokens switch per canvas (.theme-dark).
 ------------------------------------------------------------------- */
 
-@custom-variant dark (&:where(.theme-dark, .theme-dark *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .theme-dark, .theme-dark *));
 
 :root {
   /* primitives: ink (cool indigo-black) + paper (warm bone) */
@@ -54,12 +54,16 @@
   --state-build-text: var(--state-build-deep);
   --state-operate-text: var(--state-operate-deep);
   --state-structure-text: var(--state-structure);
+  --border-input: #767b93;
   --grid-line: rgba(15, 16, 32, 0.07);
   --hatch: rgba(15, 16, 32, 0.62);
   --elevation-card: none;
   color-scheme: light;
 }
 
+
+/* Dark tokens: the whole page in dark mode, or a "system" section on the light page. */
+[data-theme="dark"],
 .theme-dark {
   --surface-primary: var(--ink-950);
   --surface-secondary: var(--ink-900);
@@ -83,10 +87,27 @@
   --state-build-text: #8fd3ff;
   --state-operate-text: #8ff0da;
   --state-structure-text: #b3aeff;
+  --border-input: #7c819c;
   --grid-line: rgba(244, 244, 249, 0.07);
   --hatch: rgba(244, 244, 249, 0.6);
   --elevation-card: none;
   color-scheme: dark;
+}
+
+/* In dark mode the rhythm survives: base ink, lighter secondary, deeper "system" sections. */
+[data-theme="dark"] {
+  --surface-primary: #0e0f17;
+  --surface-secondary: #14151f;
+  --surface-elevated: #1b1d2a;
+  --border-subtle: #262939;
+  --border-strong: #383c54;
+}
+[data-theme="dark"] .theme-dark {
+  --surface-primary: #08090f;
+  --surface-secondary: #0f1019;
+  --surface-elevated: #171923;
+  --border-subtle: #20222f;
+  --border-strong: #343750;
 }
 
 @theme inline {
@@ -103,6 +124,7 @@
   --color-text-inverse: var(--text-inverse);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
+  --color-border-input: var(--border-input);
   --color-accent: var(--brand-accent);
   --color-accent-hover: var(--brand-accent-hover);
   --color-accent-contrast: var(--brand-accent-contrast);
@@ -266,6 +288,18 @@
   letter-spacing: var(--text-label--letter-spacing);
   text-transform: uppercase;
   font-weight: 500;
+}
+
+/* Step-type label inside the workflow strip: mono, but tighter than label-mono so
+   long localized labels ("APROBACIÓN HUMANA") fit six equal columns. */
+@utility wf-kind {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  hyphens: auto;
 }
 
 @utility prose-measure {
