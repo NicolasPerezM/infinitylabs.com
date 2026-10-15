@@ -221,3 +221,19 @@ The engineering-drawing grammar of v1.0 (§12) was audited by the design, data a
 
 Two rules govern any future addition: *colour means stage or step type* and *mono means the system wrote it*.
 
+## 17. v1.6 addendum — the Sprint drawn as an instrument (2026-10-15, DEC-029)
+
+The three Sprint frames read like a textbook figure. They are replaced by one axonometric scene (`components/system/OpportunitySpace.tsx`) drawn with the brand's own grammar, so it could only belong to Infinity Labs:
+
+| Element | How it is drawn | Why |
+|---|---|---|
+| Projection | Orthographic axonometric, camera eased between phases, drag to rotate, scale fixed to the floor's diagonal so rotation never zooms | An engineering drawing, not a perspective render; rotation resolves depth |
+| Floor | Hairline grid, outer edge stronger | The plan everything stands on |
+| Map | Lanes with flow chevrons, steps sized by cost, value-stream inventory triangles where work waits, dashed handoffs between processes | Lean process-mapping notation, read without a legend |
+| Score | Drop lines from each opportunity to its foot on the floor; the threshold volume with visible edges solid and hidden edges dashed, soft violet faces | Technical-drawing conventions make a 3-D position readable |
+| Design | Flows as ribbons of four strands (the signature ribbon, edge-on) with typed nodes and the step-type glyphs; systems as hatched blocks; integrations as dashed verticals; discards filed as a register of × marks | The output of the Sprint is engineering, and the discards stay on paper |
+| Type | Mono for axes, counts, system names, letters; Schibsted for process names and the key's sentences | Mono means the system wrote it |
+| Colour | Violet for the Sprint's stage (the threshold and A, B, C); step-type colours on the flow nodes; everything else ink | Colour means stage or step type |
+
+The key under the scene changes with the phase (cost and wait marks; five bullet bars per opportunity against their thresholds; the step-type glyphs and integrations) and the three keys share one cell, so nothing below moves.
+

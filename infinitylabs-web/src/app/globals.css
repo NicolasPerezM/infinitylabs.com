@@ -536,8 +536,36 @@
   }
 }
 
-/* Print and "Save as PDF": everything visible, no motion state left half-way (DEC-027). */
+/* Print and "Save as PDF": everything visible, no motion state left half-way (DEC-027), and every
+   canvas printed as paper, so dark sections and figures never come out as light ink on white (DEC-029). */
 @media print {
+  [data-theme="dark"],
+  [data-theme="dark"] .theme-dark,
+  .theme-dark {
+    --surface-primary: var(--paper-50);
+    --surface-secondary: var(--paper-100);
+    --surface-elevated: var(--paper-0);
+    --surface-inverse: var(--ink-950);
+    --text-primary: #0f1020;
+    --text-secondary: #474b60;
+    --text-tertiary: #5f647c;
+    --text-inverse: #f4f4f9;
+    --border-subtle: var(--paper-200);
+    --border-strong: var(--paper-300);
+    --brand-accent: var(--state-structure);
+    --brand-accent-contrast: #ffffff;
+    --state-discover-soft: #efe4f8;
+    --state-build-soft: #dfeefb;
+    --state-operate-soft: #dcf4ec;
+    --state-structure-soft: #e5e4ef;
+    --state-discover-text: var(--state-discover-deep);
+    --state-build-text: var(--state-build-deep);
+    --state-operate-text: var(--state-operate-deep);
+    --state-structure-text: var(--state-structure);
+    --grid-line: rgba(15, 16, 32, 0.07);
+    --hatch: rgba(15, 16, 32, 0.62);
+    color-scheme: light;
+  }
   .js .reveal,
   .js .build-item,
   .js .word-inner {

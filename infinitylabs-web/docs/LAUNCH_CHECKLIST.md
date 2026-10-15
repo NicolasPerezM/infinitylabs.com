@@ -37,6 +37,7 @@ Legend: ✅ done in repo · 🟡 done, needs founder confirmation · ⛔ blocked
 | 31 | Keynote pass: promise-first headlines, before/after, typed-flow v2, product screens on every solution (DEC-026) | ✅ | Screens are illustrative until GAP-023 |
 | 32 | Expert panel pass on every page and language; generic AI-tool patterns removed; localized 404; form feedback and persistence; print (DEC-027) | ✅ | `docs/EXPERT_PANEL.md`; founder items GAP-014, GAP-024–026 |
 | 33 | Mobile audit at 390 px: an image on every page, desk-only detail deferred, one reassurance per page, 44 px taps (DEC-028) | ✅ | `docs/MOBILE_AUDIT.md` |
+| 34 | The Sprint drawn as one 3-D scene (map → score → design), drag to rotate, prints its outcome; dark canvases print as paper (DEC-029) | ✅ | `docs/BRAND_IMPLEMENTATION.md` §17 |
 
 ## Pre-launch commands
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { OpportunityFunnel } from "@/components/system/OpportunityFunnel";
+import { OpportunitySpace } from "@/components/system/OpportunitySpace";
 import { ArrowIcon, Button } from "@/components/ui/Button";
 import { SectionFrame } from "@/components/ui/SectionFrame";
 import { getPrimaryOffer } from "@/content/offers";
@@ -8,7 +8,7 @@ import { fill, getDictionary } from "@/i18n/dictionaries";
 
 /**
  * Where engagements start (DEC-027): the claim, the two costly signals (it says what not to build;
- * the plan is yours), the decision drawn as three frames, then one ask and one text link.
+ * the plan is yours), the decision drawn as one scene in three states (DEC-029), then one ask and one text link.
  */
 export function SprintOffer({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
@@ -21,7 +21,7 @@ export function SprintOffer({ locale }: { locale: Locale }) {
         <p className="max-w-[46ch] text-body-lg text-text-secondary lg:col-span-6">{fill(t.lede, { name: o.name })}</p>
       </div>
       <div className="mt-14 md:mt-16">
-        <OpportunityFunnel phases={o.phases} phaseLabel={t.phase} labels={t.funnel} />
+        <OpportunitySpace phases={o.phases} phaseLabel={t.phase} labels={t.space} kinds={d.workflow.kinds} />
       </div>
       <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
         <Button href={href(locale, "/contact?intent=sprint")} event="opportunity_sprint_cta" size="lg">

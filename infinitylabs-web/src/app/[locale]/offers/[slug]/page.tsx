@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/sections/PageHero";
 import { FinalCta } from "@/components/sections/FinalCta";
-import { OpportunityFunnel } from "@/components/system/OpportunityFunnel";
+import { OpportunitySpace } from "@/components/system/OpportunitySpace";
 import { StageLoop } from "@/components/system/StageLoop";
 import { StageStrip } from "@/components/system/StageStrip";
 import { ArrowIcon, Button } from "@/components/ui/Button";
@@ -83,10 +83,10 @@ export default async function OfferPage({ params }: Params) {
             <h2 id="phases-title" className="text-display-lg max-w-[18ch]">{t.phasesTitle}</h2>
             <p className="max-w-[60ch] text-body text-text-secondary">{o.format}</p>
           </div>
-          {/* The Sprint is drawn (the decision as three frames); other engagements list their phases. */}
+          {/* The Sprint is drawn (one scene, three states: DEC-029); other engagements list their phases. */}
           {sprint ? (
             <div className="mt-12">
-              <OpportunityFunnel phases={o.phases} phaseLabel={t.phase} labels={d.home.sprint.funnel} detail />
+              <OpportunitySpace phases={o.phases} phaseLabel={t.phase} labels={d.home.sprint.space} kinds={d.workflow.kinds} detail />
             </div>
           ) : (
             <ol className="reveal mt-12 grid border-t border-border-strong pt-10 md:grid-cols-3 md:gap-8">

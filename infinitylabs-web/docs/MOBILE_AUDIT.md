@@ -68,3 +68,8 @@ Checks on the same build: axe 0 violations on 16 routes × 2 themes × 2 widths;
 
 - Real product screenshots (GAP-023): the gallery shows illustrative screens until a client approves a real one.
 - A short demonstration video of a system running would be the strongest mobile asset of all; it needs a real system to film.
+
+## 7. Update — the Sprint scene (DEC-029, 2026-10-15)
+
+The Sprint storyboard of §4 is replaced by the scene in three states. On a phone it is a 352 px stage under which the key changes with the phase; the second opportunity card (A) is kept for wider screens and the discard card stays, because it carries the point (high value, data not ready). Phone length at 390 px: home 12.8 → 13.5 screens, Sprint page 6.0 → 6.6, whole site 127.8 → 129.1 for 28 routes. The added half screen is the image: the Sprint is now drawn instead of thumbnailed.
+
