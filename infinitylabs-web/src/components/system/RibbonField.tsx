@@ -8,9 +8,10 @@ import type { Stage } from "@/content/operating-model";
  *
  * The operating loop drawn as a plotter ribbon: parallel ink strands follow the loop's centerline,
  * twist once (Möbius principle) with depth shading (front face dark, back face light, wider when
- * nearer), ruler ticks along the path, pointer displacement, and colour packets with a directional
- * tail travelling Discover → Build → Operate. Nodes pulse when a packet passes. An `active` stage
- * keeps its segment coloured (used by the operating-model scrollytelling).
+ * nearer), pointer displacement, and colour packets with a directional tail travelling
+ * Discover → Build → Operate (the packets are the only cue for direction, so they stay). An
+ * `active` stage keeps its segment coloured and its node haloed. No ruler ticks (a tick needs a
+ * unit) and no pulse rings (DEC-027).
  *
  * Canvas 2D only. Theme-aware (reads --surface-primary). Pauses off-screen / hidden tab.
  * Reduced motion → one static frame. Touch → no pointer displacement.
@@ -202,21 +203,6 @@ export function RibbonField({ stage = { x: 0.4, y: 0.04, w: 0.62, h: 0.92 }, sta
         return { x: pts[i].x + nrm[i].x * off + tan[i].x * shear, y: pts[i].y + nrm[i].y * off + tan[i].y * shear };
       };
 
-      // 0) ruler ticks along the outer edge of the path
-      ctx!.lineWidth = 1;
-      ctx!.strokeStyle = `rgba(${ink},${(0.22 * inkMul).toFixed(3)})`;
-      const tickEvery = Math.round(N / 36);
-      ctx!.beginPath();
-      for (let i = 0; i < N; i += tickEvery) {
-        const major = (i / tickEvery) % 4 === 0;
-        const half = halfBase * (0.8 + 0.4 * depth(i)) * Math.abs(Math.cos(Math.PI * (i / N) + twist));
-        const len = major ? 10 : 5;
-        const ox = nrm[i].x * (half + 6), oy = nrm[i].y * (half + 6);
-        ctx!.moveTo(pts[i].x - ox, pts[i].y - oy);
-        ctx!.lineTo(pts[i].x - ox - nrm[i].x * len, pts[i].y - oy - nrm[i].y * len);
-      }
-      ctx!.stroke();
-
       // 1) ink strands, shaded by facing and depth; drawn in two passes (back face first)
       ctx!.lineCap = "round";
       for (const pass of [0, 1]) {
@@ -301,27 +287,17 @@ export function RibbonField({ stage = { x: 0.4, y: 0.04, w: 0.62, h: 0.92 }, sta
         }
       }
 
-      // 4) stage nodes + pulse when a packet passes
+      // 4) stage nodes (the active one haloed)
       for (const n of NODES) {
         const i = Math.round(n.s * N) % N;
         const p = pts[i];
         const c = rgb(n.color);
         const isActive = act === n.id;
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, isActive ? 20 : 13, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(${c},${isActive ? 0.22 : 0.16})`;
-        ctx!.fill();
-        for (const head of heads) {
-          let d = Math.abs(head - n.s);
-          d = Math.min(d, 1 - d);
-          if (d < 0.035) {
-            const k = 1 - d / 0.035;
-            ctx!.beginPath();
-            ctx!.arc(p.x, p.y, 8 + (1 - k) * 22, 0, Math.PI * 2);
-            ctx!.strokeStyle = `rgba(${c},${(k * 0.6).toFixed(2)})`;
-            ctx!.lineWidth = 1.2;
-            ctx!.stroke();
-          }
+        if (isActive) {
+          ctx!.beginPath();
+          ctx!.arc(p.x, p.y, 18, 0, Math.PI * 2);
+          ctx!.fillStyle = `rgba(${c},0.22)`;
+          ctx!.fill();
         }
         ctx!.beginPath();
         ctx!.arc(p.x, p.y, 5, 0, Math.PI * 2);

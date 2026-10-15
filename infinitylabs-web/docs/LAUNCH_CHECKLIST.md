@@ -34,6 +34,9 @@ Legend: ✅ done in repo · 🟡 done, needs founder confirmation · ⛔ blocked
 | 28 | Languages: `/es` default, `/en`, `/fr`; switcher; cookie preference; hreflang + x-default; sitemap × 3 | ✅ | DEC-021; French copy needs native review (GAP-015) |
 | 29 | Dark mode: light · system · dark toggle; tokens per theme; contrast verified in both themes (text ≥ 4.5:1, inputs ≥ 3:1) | ✅ | DEC-022; `docs/BRAND_IMPLEMENTATION.md` §13 |
 | 30 | Automated accessibility audit (axe) on key pages, both themes | ✅ | `docs/qa/README.md` |
+| 31 | Keynote pass: promise-first headlines, before/after, typed-flow v2, product screens on every solution (DEC-026) | ✅ | Screens are illustrative until GAP-023 |
+| 32 | Expert panel pass on every page and language; generic AI-tool patterns removed; localized 404; form feedback and persistence; print (DEC-027) | ✅ | `docs/EXPERT_PANEL.md`; founder items GAP-014, GAP-024–026 |
+| 33 | Mobile audit at 390 px: an image on every page, desk-only detail deferred, one reassurance per page, 44 px taps (DEC-028) | ✅ | `docs/MOBILE_AUDIT.md` |
 
 ## Pre-launch commands
 

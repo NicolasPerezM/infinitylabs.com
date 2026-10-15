@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/sections/PageHero";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { StageStrip } from "@/components/system/StageStrip";
 import { ArrowIcon } from "@/components/ui/Button";
 import { Frame } from "@/components/ui/Frame";
 import { getCapabilities } from "@/content/capabilities";
@@ -21,31 +22,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return buildMetadata(locale, { title: t.metaTitle, description: t.metaDescription, path: "/capabilities" });
 }
 
+const dot = { discover: "bg-discover", build: "bg-build", operate: "bg-operate" } as const;
+
+/** Capabilities in the order they come in: one section per stage (name, promise), each row a link. */
 export default async function CapabilitiesPage({ params }: Params) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
-  const d = getDictionary(locale);
-  const t = d.pages.capabilities;
+  const t = getDictionary(locale).pages.capabilities;
   const stages = getOperatingModel(locale);
   const capabilities = getCapabilities(locale);
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} stage="structure" title={t.title} lede={t.lede} readout={t.readout} />
+      <PageHero title={t.title} lede={t.lede}>
+        <StageStrip locale={locale} links className="max-w-xl" />
+      </PageHero>
       {stages.map((stage, si) => {
         const caps = capabilities.filter((c) => c.stage === stage.id);
         return (
-          <Frame key={stage.id} id={stage.id} eyebrow={`${stage.name} · ${stage.method.join(" · ")}`} title={stage.promise} canvas={si % 2 === 1 ? "secondary" : "light"}>
+          <Frame key={stage.id} id={stage.id} title={stage.name} lede={stage.promise} canvas={si % 2 === 1 ? "secondary" : "light"}>
+            <span aria-hidden className={`-mt-2 mb-6 block h-1 w-16 rounded-full ${dot[stage.id]}`} />
             <ul className="flex flex-col divide-y divide-border-subtle border-y border-border-subtle">
               {caps.map((c) => (
-                <li key={c.slug} className="reveal">
-                  <Link href={href(locale, `/capabilities/${c.slug}`)} data-event="capability_view" className="group grid gap-3 py-6 md:grid-cols-12 md:gap-6">
-                    <h3 className="text-heading md:col-span-4">{c.name}</h3>
-                    <p className="text-small text-text-secondary md:col-span-6">{c.summary}</p>
-                    <span className="inline-flex items-center gap-1.5 text-small font-medium md:col-span-2 md:justify-end">
-                      {t.detail}
-                      <ArrowIcon className="transition-transform duration-150 group-hover:translate-x-0.5" />
-                    </span>
+                <li key={c.slug}>
+                  <Link href={href(locale, `/capabilities/${c.slug}`)} data-event="capability_view" className="group grid grid-cols-[1fr_auto] items-center gap-4 py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] md:gap-6">
+                    <h3 className="col-start-1 row-start-1 text-heading">{c.name}</h3>
+                    <p className="col-span-2 row-start-2 text-body-lg text-text-secondary md:col-span-1 md:col-start-2 md:row-start-1">{c.promise}</p>
+                    <ArrowIcon className="col-start-2 row-start-1 transition-transform duration-150 group-hover:translate-x-0.5 md:col-start-3" />
                   </Link>
                 </li>
               ))}
@@ -53,11 +56,11 @@ export default async function CapabilitiesPage({ params }: Params) {
           </Frame>
         );
       })}
-      <Frame id="technology" eyebrow={t.techEyebrow} title={t.techTitle} lede={t.techLede} canvas="dark">
-        <dl className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          {getTechnologyPosture(locale).map((x, i) => (
-            <div key={x.area} className="reveal flex flex-col gap-1.5 border-t border-border-subtle pt-4" style={{ ["--reveal-delay" as string]: `${(i % 2) * 80}ms` }}>
-              <dt className="label-mono text-text-tertiary">{x.area}</dt>
+      <Frame id="technology" title={t.techTitle} lede={t.techLede} canvas="dark">
+        <dl className="grid gap-x-8 sm:grid-cols-2">
+          {getTechnologyPosture(locale).map((x) => (
+            <div key={x.area} className="flex flex-col gap-1.5 border-t border-border-subtle py-4">
+              <dt className="text-small font-medium text-text-primary">{x.area}</dt>
               <dd className="text-small text-text-secondary">{x.description}</dd>
             </div>
           ))}

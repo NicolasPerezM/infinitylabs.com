@@ -62,4 +62,4 @@ Content rules: nothing renders as proof (clients, case studies, testimonials, te
 
 ## Documentation
 
-`docs/SITE_AUDIT.md` · `docs/UX_UI_AUDIT.md` · `docs/COPY_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`
+`docs/EXPERT_PANEL.md` · `docs/MOBILE_AUDIT.md` · `docs/SITE_AUDIT.md` · `docs/UX_UI_AUDIT.md` · `docs/COPY_AUDIT.md` · `docs/TECHNICAL_ARCHITECTURE.md` · `docs/BRAND_IMPLEMENTATION.md` · `docs/DECISION_LOG.md` · `docs/CONTENT_GAPS.md` · `docs/ANALYTICS_PLAN.md` · `docs/MOBIUS_CONCIERGE.md` · `docs/LAUNCH_CHECKLIST.md` · `docs/BUSINESS_STRATEGY.md` · `docs/MASTER_PROMPT.md` · `brand/research/BRAND_RESEARCH_PHASE_1-2.md`

@@ -1,96 +1,71 @@
 import type { CSSProperties } from "react";
-import type { SolutionDiagramStep } from "@/content/solutions";
+import type { SolutionDiagramStep, StepKind } from "@/content/solutions";
+import { KindGlyph } from "./KindGlyph";
 import { cn } from "@/lib/utils";
 
 /**
- * Typed workflow strip: input / deterministic / AI / agent / human approval / output.
- * A packet travels the track and each step lights up as it passes (pure CSS, synced by
- * negative delays; runs only while the parent `.reveal` is visible; off under reduced motion).
- * Horizontal on md+; vertical below md and always in `compact` mode (previews, narrow panels).
+ * Typed workflow (DEC-026, revised DEC-027). Built like a keynote diagram: few elements, labelled
+ * directly (glyph + name; kind in mono because the system assigns it), arrows between nodes, and a
+ * build that brings the steps in one at a time. It draws the real mechanism: a conditional step
+ * (only some items take it) has dashed links in and out and states its condition. No looping
+ * packet: it would send every item through a step most items skip. Colour encodes step type only;
+ * deterministic, input and output are neutral. Vertical by default, horizontal once the figure is
+ * ≥ 48rem wide (container query). `compact` stays vertical. Reduced motion and print: final state.
  */
 
-const KIND_STYLE: Record<SolutionDiagramStep["kind"], { dot: string; color: string; soft: string }> = {
-  input: { dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
-  deterministic: { dot: "bg-structure", color: "var(--state-structure)", soft: "var(--state-structure-soft)" },
-  ai: { dot: "bg-build", color: "var(--state-build)", soft: "var(--state-build-soft)" },
-  agent: { dot: "bg-discover", color: "var(--state-discover)", soft: "var(--state-discover-soft)" },
-  human: { dot: "bg-operate", color: "var(--state-operate)", soft: "var(--state-operate-soft)" },
-  output: { dot: "bg-text-tertiary", color: "var(--border-strong)", soft: "transparent" },
+export const KIND_STYLE: Record<StepKind, { color: string; soft: string }> = {
+  input: { color: "var(--text-tertiary)", soft: "var(--surface-secondary)" },
+  deterministic: { color: "var(--text-secondary)", soft: "var(--surface-secondary)" },
+  ai: { color: "var(--state-build-text)", soft: "var(--state-build-soft)" },
+  agent: { color: "var(--state-discover-text)", soft: "var(--state-discover-soft)" },
+  human: { color: "var(--state-operate-text)", soft: "var(--state-operate-soft)" },
+  output: { color: "var(--text-tertiary)", soft: "var(--surface-secondary)" },
 };
 
-export type KindLabels = Record<SolutionDiagramStep["kind"], string>;
+export type KindLabels = Record<StepKind, string>;
 
-type Props = { steps: SolutionDiagramStep[]; kinds: KindLabels; title: string; className?: string; legend?: boolean; caption?: string; compact?: boolean; animate?: boolean };
+type Props = { steps: SolutionDiagramStep[]; kinds: KindLabels; title: string; className?: string; caption?: string; compact?: boolean };
 
-export function WorkflowDiagram({ steps, kinds, title, className, legend = true, caption, compact = false, animate = true }: Props) {
-  const n = steps.length;
-  const KIND = Object.fromEntries((Object.keys(KIND_STYLE) as SolutionDiagramStep["kind"][]).map((k) => [k, { ...KIND_STYLE[k], label: kinds[k] }])) as Record<SolutionDiagramStep["kind"], { label: string; dot: string; color: string; soft: string }>;
-  const label = `${title}: ${steps.map((s) => `${s.label} (${KIND[s.kind].label})`).join(" → ")}`;
-
-  if (compact) {
-    return (
-      <figure className={cn("wf-track wf-vertical relative w-full", className)} aria-label={label} style={{ ["--n" as string]: n } as CSSProperties}>
-        {animate && (
-          <div aria-hidden className="pointer-events-none absolute bottom-3 left-[7px] top-3">
-            <div className="absolute inset-y-0 left-0 w-px bg-border-subtle" />
-            <div className="wf-packet absolute left-0 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-text-primary ring-4 ring-surface-elevated" />
-          </div>
-        )}
-        <ol className="relative flex flex-col gap-1.5 pl-6">
-          {steps.map((step, i) => (
-            <li key={i}>
-              <div
-                className={cn("wf-step flex items-center justify-between gap-3 rounded-md border border-border-strong bg-surface-elevated px-3 py-2", (step.kind === "input" || step.kind === "output") && "border-dashed")}
-                style={{ ["--i" as string]: i, ["--wf-color" as string]: KIND[step.kind].color, ["--wf-soft" as string]: KIND[step.kind].soft } as CSSProperties}
-              >
-                <span className="text-small font-medium text-text-primary">{step.label}</span>
-                <span className="wf-kind flex shrink-0 items-center gap-1.5 text-right text-text-tertiary">
-                  <span aria-hidden className={cn("inline-block size-1.5 shrink-0 rounded-full", KIND[step.kind].dot)} />
-                  <span className="min-w-0">{KIND[step.kind].label}</span>
-                </span>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </figure>
-    );
-  }
-
+export function WorkflowDiagram({ steps, kinds, title, className, caption, compact = false }: Props) {
+  const label = `${title}: ${steps.map((s) => `${s.label} (${kinds[s.kind]}${s.when ? `, ${s.when}` : ""})`).join(" → ")}`;
   return (
-    <figure className={cn("wf-track relative w-full", className)} aria-label={label} style={{ ["--n" as string]: n } as CSSProperties}>
-      {animate && (
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-full w-px bg-border-subtle md:left-0 md:top-1/2 md:h-px md:w-full" />
-          <div className="wf-packet absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-text-primary ring-4 ring-surface-primary md:top-1/2" />
-        </div>
-      )}
-      <ol className="relative grid gap-3 md:grid-flow-col md:auto-cols-fr">
-        {steps.map((step, i) => (
-          <li key={i} className="relative flex md:flex-col">
-            <div
-              className={cn("wf-step relative z-10 flex min-h-[5.25rem] w-full flex-col justify-between gap-2 rounded-md border border-border-strong bg-surface-elevated p-2.5", (step.kind === "input" || step.kind === "output") && "border-dashed")}
-              style={{ ["--i" as string]: i, ["--wf-color" as string]: KIND[step.kind].color, ["--wf-soft" as string]: KIND[step.kind].soft } as CSSProperties}
-            >
-              <span className="wf-kind flex flex-wrap items-start gap-x-1.5 gap-y-0.5 text-text-tertiary">
-                <span aria-hidden className={cn("mt-1 inline-block size-1.5 shrink-0 rounded-full", KIND[step.kind].dot)} />
-                <span className="min-w-0 break-words">{KIND[step.kind].label}</span>
+    <figure className={cn("wf2 reveal relative w-full", !compact && "@container/wf", className)} aria-label={label}>
+      <ol className="wf2-list" aria-hidden>
+        {steps.map((step, i) => {
+          const k = KIND_STYLE[step.kind];
+          const io = step.kind === "input" || step.kind === "output";
+          const next = steps[i + 1];
+          const dashedLink = !!(step.when || next?.when);
+          return (
+            <li key={i} className="wf2-step build-item" style={{ ["--b" as string]: i } as CSSProperties}>
+              {next && (
+                <span className="wf2-link build-line" style={{ ["--b" as string]: i + 0.6 } as CSSProperties}>
+                  <span className={cn("wf2-line", dashedLink && "wf2-line-dashed")} />
+                  <svg viewBox="0 0 8 8" width="8" height="8" className="wf2-head" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2.5 1 5.5 4 2.5 7" />
+                  </svg>
+                </span>
+              )}
+              <span
+                className={cn("relative grid size-10 shrink-0 place-items-center rounded-full border-[1.5px]", io && "border-dashed", step.kind === "human" && "bg-[var(--wf-soft)]")}
+                style={{ borderColor: k.color, color: k.color, ["--wf-soft" as string]: k.soft } as CSSProperties}
+              >
+                <KindGlyph kind={step.kind} size={18} />
               </span>
-              <span className="text-small font-medium leading-snug text-text-primary">{step.label}</span>
-            </div>
-          </li>
-        ))}
+              <span className="wf2-text">
+                <span className="text-[0.95rem] font-medium leading-snug text-balance text-text-primary">{step.label}</span>
+                {!io && (
+                  <span className="wf-kind" style={{ color: k.color }}>
+                    {kinds[step.kind]}
+                  </span>
+                )}
+                {step.when && <span className="text-[0.8rem] leading-snug text-text-tertiary">{step.when}</span>}
+              </span>
+            </li>
+          );
+        })}
       </ol>
-      {legend && (
-        <figcaption className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-small text-text-tertiary">
-          {(["deterministic", "ai", "agent", "human"] as const).map((k) => (
-            <span key={k} className="inline-flex items-center gap-1.5">
-              <span aria-hidden className={cn("inline-block size-1.5 rounded-full", KIND[k].dot)} />
-              {KIND[k].label}
-            </span>
-          ))}
-          {caption && <span className="basis-full">{caption}</span>}
-        </figcaption>
-      )}
+      {caption && <figcaption className="mt-8 text-small text-text-tertiary">{caption}</figcaption>}
     </figure>
   );
 }

@@ -6,9 +6,8 @@ import { track } from "@/lib/analytics";
 
 /**
  * Progressive enhancements that need the browser:
- * 1. Scroll reveals for `.reveal` blocks and `.rule` hairlines (content is visible without JS).
- * 2. Pointer position for `.grid-reveal` layers (grid shows where you look).
- * 3. Click tracking for any element with `data-event` (docs/ANALYTICS_PLAN.md).
+ * 1. Scroll reveals for `.reveal` figures (diagrams build when seen; text never waits).
+ * 2. Click tracking for any element with `data-event` (docs/ANALYTICS_PLAN.md).
  */
 export function Enhancements() {
   const pathname = usePathname();
@@ -33,23 +32,6 @@ export function Enhancements() {
     );
     nodes.forEach((n) => io.observe(n));
     return () => io.disconnect();
-  }, [pathname]);
-
-  useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-    const layers = Array.from(document.querySelectorAll<HTMLElement>("[data-grid-reveal]"));
-    if (!layers.length) return;
-    const handlers = layers.map((layer) => {
-      const host = layer.parentElement as HTMLElement;
-      const onMove = (e: PointerEvent) => {
-        const r = host.getBoundingClientRect();
-        layer.style.setProperty("--mx", `${e.clientX - r.left}px`);
-        layer.style.setProperty("--my", `${e.clientY - r.top}px`);
-      };
-      host.addEventListener("pointermove", onMove);
-      return () => host.removeEventListener("pointermove", onMove);
-    });
-    return () => handlers.forEach((off) => off());
   }, [pathname]);
 
   useEffect(() => {

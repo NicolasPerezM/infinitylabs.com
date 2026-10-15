@@ -6,6 +6,10 @@ export type Offer = {
   stage: Stage;
   primary?: boolean;
   name: string;
+  /** Short promise (≤ 8 words), used as the page headline. */
+  promise: string;
+  /** The closing question on the offer page, in the buyer's words (DEC-027). */
+  ask: string;
   eyebrow: string;
   headline: string;
   summary: string;
@@ -23,17 +27,19 @@ const base: Base[] = [
   { slug: "ai-opportunity-sprint", stage: "discover", primary: true },
   { slug: "agentic-workflow-systems", stage: "build" },
   { slug: "enterprise-knowledge-document-ai", stage: "build" },
-  { slug: "managed-ai", stage: "operate" },
   { slug: "digital-growth-system", stage: "build" },
+  { slug: "managed-ai", stage: "operate" },
 ];
 
 const text: Record<Locale, Record<string, Text>> = {
   en: {
     "ai-opportunity-sprint": {
+      promise: "Decide what to build before you build it.",
+      ask: "Where is the manual work?",
       name: "AI Opportunity Sprint", eyebrow: "Offer · Discover",
-      headline: "A structured engagement to identify, evaluate and prioritize the AI opportunities worth building.",
+      headline: "We map your processes, score every opportunity and also document the ones not worth building. The plan is yours, whether you execute it with us or with another team.",
       summary: "The Sprint replaces open-ended AI exploration with a decision: which processes, in what order, with what architecture, and what business case. It is the entry point to everything else we do.",
-      forWhom: ["Leadership teams with executive sponsorship and a mandate to move from experiments to production.", "Organizations with repetitive, document-heavy or multi-system processes and measurable operational cost.", "Teams that want an engineering-grade plan before committing budget to a build."],
+      forWhom: ["Leadership teams with an executive sponsor who opens access to the people and systems of the process. Without that access the Sprint does not pay off, and we tell you before we start.", "Organizations with repetitive, document-heavy or multi-system processes and measurable operational cost.", "Teams that want an engineering-grade plan before committing budget to a build."],
       phases: [
         { name: "Map", short: "How work actually flows, where it waits, what it costs.", description: "Interviews with the people who do the work, process walkthroughs, systems and data inventory. We document how work actually flows, where it waits and what it costs." },
         { name: "Score", short: "Value, feasibility, data readiness, risk. Failures documented too.", description: "Each candidate opportunity is scored on business value, feasibility, data readiness, risk and change effort. We show the ones that fail the test as clearly as the ones that pass." },
@@ -49,6 +55,8 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
     },
     "agentic-workflow-systems": {
+      promise: "One whole workflow, rebuilt as a system.",
+      ask: "Which workflow is expensive, slow or error-prone today?",
       name: "Agentic Workflow Systems", eyebrow: "Offer · Build",
       headline: "Redesign a business workflow as a production system that combines automation, AI, agents and human approval.",
       summary: "We take one prioritized workflow end to end: redesign, architecture, build, integration, evaluation and launch, with your team involved at every approval point.",
@@ -62,8 +70,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Fixed-scope build for one workflow, followed by Managed AI or a handover to your team.",
     },
     "enterprise-knowledge-document-ai": {
+      promise: "Your knowledge, answering with its sources.",
+      ask: "Where do your teams search for answers today?",
       name: "Enterprise Knowledge + Document AI", eyebrow: "Offer · Build",
-      headline: "Turn fragmented knowledge and document-heavy processes into intelligent operational systems.",
+      headline: "Sourced answers over your knowledge, and documents that reach the ERP with human review where it matters.",
       summary: "Deployment of a governed knowledge system, a document intelligence pipeline, or both, connected to your repositories and systems of record.",
       forWhom: ["Organizations where teams search for answers across many repositories and experts.", "Operations that process large volumes of invoices, claims, contracts, forms or onboarding files."],
       phases: [
@@ -75,8 +85,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Scoped by repositories, document types and volumes. Typically followed by Managed AI.",
     },
     "managed-ai": {
+      promise: "Someone always answers for your AI.",
+      ask: "Which AI system do you already run in production?",
       name: "Managed AI", eyebrow: "Offer · Operate",
-      headline: "Operate, monitor, evaluate, optimize and improve production AI systems.",
+      headline: "A named team watches your AI systems, tests every change and improves them in regular cycles.",
       summary: "An ongoing service with one accountable team for the AI systems in your operation, whether we built them or not.",
       forWhom: ["Organizations with AI systems in production that need reliability, cost control and continuous improvement.", "Teams that want to expand autonomy safely as evaluation data accumulates."],
       phases: [
@@ -88,6 +100,8 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Monthly service with response commitments agreed per system.",
     },
     "digital-growth-system": {
+      promise: "From brand to lead.",
+      ask: "Where does the chain from brand to lead break today?",
       name: "Digital Growth System", eyebrow: "Offer · Build",
       headline: "Build or rebuild the digital environment and the demand engine that runs on it.",
       summary: "Brand, site, content, campaigns and measurement delivered as one system, then operated with your team. The AI layer is applied where it shortens cycles: research, creative variants, lead qualification and reporting.",
@@ -103,10 +117,12 @@ const text: Record<Locale, Record<string, Text>> = {
   },
   es: {
     "ai-opportunity-sprint": {
+      promise: "Decide qué construir antes de construirlo.",
+      ask: "¿Dónde está el trabajo manual?",
       name: "AI Opportunity Sprint", eyebrow: "Oferta · Descubrir",
-      headline: "Un proyecto estructurado para identificar, evaluar y priorizar las oportunidades de IA que vale la pena construir.",
+      headline: "Mapeamos tus procesos, puntuamos cada oportunidad y documentamos también las que no vale la pena construir. El plan es tuyo, lo ejecutes con nosotros o con otro equipo.",
       summary: "El Sprint reemplaza la exploración abierta de IA por una decisión: qué procesos, en qué orden, con qué arquitectura y con qué caso de negocio. Es la puerta de entrada a todo lo demás que hacemos.",
-      forWhom: ["Equipos directivos con patrocinio ejecutivo y mandato para pasar de experimentos a producción.", "Organizaciones con procesos repetitivos, intensivos en documentos o multisistema, y costo operativo medible.", "Equipos que quieren un plan de nivel ingeniería antes de comprometer presupuesto en una construcción."],
+      forWhom: ["Equipos directivos con un patrocinador ejecutivo que abre el acceso a las personas y los sistemas del proceso. Sin ese acceso el Sprint no rinde, y te lo decimos antes de empezar.", "Organizaciones con procesos repetitivos, intensivos en documentos o multisistema, y costo operativo medible.", "Equipos que quieren un plan de nivel ingeniería antes de comprometer presupuesto en una construcción."],
       phases: [
         { name: "Mapear", short: "Cómo fluye realmente el trabajo, dónde espera, cuánto cuesta.", description: "Entrevistas con las personas que hacen el trabajo, recorridos de proceso, inventario de sistemas y datos. Documentamos cómo fluye realmente el trabajo, dónde espera y cuánto cuesta." },
         { name: "Puntuar", short: "Valor, viabilidad, preparación de datos, riesgo. Los descartes también se documentan.", description: "Cada oportunidad candidata se puntúa por valor de negocio, viabilidad, preparación de datos, riesgo y esfuerzo de cambio. Mostramos las que no pasan la prueba con la misma claridad que las que sí." },
@@ -122,6 +138,8 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
     },
     "agentic-workflow-systems": {
+      promise: "Un flujo completo, rediseñado como sistema.",
+      ask: "¿Qué flujo es hoy caro, lento o propenso a errores?",
       name: "Sistemas de flujos agénticos", eyebrow: "Oferta · Construir",
       headline: "Rediseñar un flujo de negocio como un sistema en producción que combina automatización, IA, agentes y aprobación humana.",
       summary: "Tomamos un flujo priorizado de punta a punta: rediseño, arquitectura, construcción, integración, evaluación y lanzamiento, con tu equipo involucrado en cada punto de aprobación.",
@@ -135,8 +153,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Construcción de alcance fijo para un flujo, seguida de Managed AI o de una entrega a tu equipo.",
     },
     "enterprise-knowledge-document-ai": {
+      promise: "Tu conocimiento, respondiendo con sus fuentes.",
+      ask: "¿Dónde buscan respuestas tus equipos hoy?",
       name: "Conocimiento empresarial + IA documental", eyebrow: "Oferta · Construir",
-      headline: "Convertir el conocimiento fragmentado y los procesos intensivos en documentos en sistemas operativos inteligentes.",
+      headline: "Respuestas con fuente sobre tu conocimiento, y documentos que llegan al ERP con revisión humana donde importa.",
       summary: "Despliegue de un sistema de conocimiento gobernado, un pipeline de inteligencia documental, o ambos, conectados a tus repositorios y sistemas de registro.",
       forWhom: ["Organizaciones donde los equipos buscan respuestas en muchos repositorios y expertos.", "Operaciones que procesan grandes volúmenes de facturas, siniestros, contratos, formularios o archivos de vinculación."],
       phases: [
@@ -148,8 +168,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Dimensionado por repositorios, tipos de documento y volúmenes. Normalmente seguido de Managed AI.",
     },
     "managed-ai": {
+      promise: "Siempre hay alguien que responde por tu IA.",
+      ask: "¿Qué sistema de IA ya tienes en producción?",
       name: "Managed AI", eyebrow: "Oferta · Operar",
-      headline: "Operar, monitorear, evaluar, optimizar y mejorar sistemas de IA en producción.",
+      headline: "Un equipo con nombre vigila tus sistemas de IA, prueba cada cambio y los mejora en ciclos regulares.",
       summary: "Un servicio continuo con un solo equipo responsable de los sistemas de IA de tu operación, los hayamos construido nosotros o no.",
       forWhom: ["Organizaciones con sistemas de IA en producción que necesitan fiabilidad, control de costos y mejora continua.", "Equipos que quieren ampliar la autonomía con seguridad a medida que se acumulan datos de evaluación."],
       phases: [
@@ -161,6 +183,8 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Servicio mensual con compromisos de respuesta acordados por sistema.",
     },
     "digital-growth-system": {
+      promise: "De la marca al lead.",
+      ask: "¿Dónde se rompe hoy la cadena de la marca al lead?",
       name: "Sistema de crecimiento digital", eyebrow: "Oferta · Construir",
       headline: "Construir o reconstruir el entorno digital y el motor de demanda que corre sobre él.",
       summary: "Marca, sitio, contenido, campañas y medición entregados como un solo sistema y luego operados con tu equipo. La capa de IA se aplica donde acorta ciclos: investigación, variantes creativas, calificación de leads y reportes.",
@@ -176,10 +200,12 @@ const text: Record<Locale, Record<string, Text>> = {
   },
   fr: {
     "ai-opportunity-sprint": {
+      promise: "Décidez quoi construire avant de le construire.",
+      ask: "Où se trouve le travail manuel ?",
       name: "AI Opportunity Sprint", eyebrow: "Offre · Découvrir",
-      headline: "Une mission structurée pour identifier, évaluer et prioriser les opportunités d’IA qui méritent d’être construites.",
+      headline: "Nous cartographions vos processus, notons chaque opportunité et documentons aussi celles qui ne méritent pas d’être construites. Le plan vous appartient, que vous l’exécutiez avec nous ou avec une autre équipe.",
       summary: "Le Sprint remplace l’exploration ouverte de l’IA par une décision : quels processus, dans quel ordre, avec quelle architecture et quel dossier économique. C’est la porte d’entrée de tout ce que nous faisons.",
-      forWhom: ["Des équipes dirigeantes avec un sponsor exécutif et un mandat pour passer des expériences à la production.", "Des organisations aux processus répétitifs, riches en documents ou multi-systèmes, avec un coût opérationnel mesurable.", "Des équipes qui veulent un plan de niveau ingénierie avant d’engager un budget de construction."],
+      forWhom: ["Des équipes de direction avec un sponsor exécutif qui ouvre l’accès aux personnes et aux systèmes du processus. Sans cet accès, le Sprint ne rend pas, et nous vous le disons avant de commencer.", "Des organisations aux processus répétitifs, riches en documents ou multi-systèmes, avec un coût opérationnel mesurable.", "Des équipes qui veulent un plan de niveau ingénierie avant d’engager un budget de construction."],
       phases: [
         { name: "Cartographier", short: "Comment le travail circule vraiment, où il attend, ce qu’il coûte.", description: "Entretiens avec les personnes qui font le travail, parcours des processus, inventaire des systèmes et des données. Nous documentons comment le travail circule réellement, où il attend et ce qu’il coûte." },
         { name: "Noter", short: "Valeur, faisabilité, maturité des données, risque. Les échecs sont documentés aussi.", description: "Chaque opportunité candidate est notée sur la valeur métier, la faisabilité, la maturité des données, le risque et l’effort de changement. Nous montrons celles qui échouent au test aussi clairement que celles qui le passent." },
@@ -195,6 +221,8 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
     },
     "agentic-workflow-systems": {
+      promise: "Un flux entier, repensé comme un système.",
+      ask: "Quel flux est aujourd’hui coûteux, lent ou sujet aux erreurs ?",
       name: "Systèmes de flux agentiques", eyebrow: "Offre · Construire",
       headline: "Repenser un flux métier en système de production qui combine automatisation, IA, agents et approbation humaine.",
       summary: "Nous prenons un flux priorisé de bout en bout : refonte, architecture, construction, intégration, évaluation et lancement, avec votre équipe impliquée à chaque point d’approbation.",
@@ -208,8 +236,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Construction à périmètre fixe pour un flux, suivie de Managed AI ou d’une passation à votre équipe.",
     },
     "enterprise-knowledge-document-ai": {
+      promise: "Votre savoir, qui répond avec ses sources.",
+      ask: "Où vos équipes cherchent-elles des réponses aujourd’hui ?",
       name: "Connaissance d’entreprise + IA documentaire", eyebrow: "Offre · Construire",
-      headline: "Transformer une connaissance fragmentée et des processus riches en documents en systèmes opérationnels intelligents.",
+      headline: "Des réponses sourcées sur votre savoir, et des documents qui arrivent dans l’ERP avec une revue humaine là où elle compte.",
       summary: "Déploiement d’un système de connaissance gouverné, d’un pipeline d’intelligence documentaire, ou des deux, connectés à vos dépôts et systèmes de référence.",
       forWhom: ["Des organisations où les équipes cherchent des réponses dans de nombreux dépôts et auprès d’experts.", "Des opérations qui traitent de gros volumes de factures, sinistres, contrats, formulaires ou dossiers d’onboarding."],
       phases: [
@@ -221,8 +251,10 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Dimensionné par dépôts, types de documents et volumes. Généralement suivi de Managed AI.",
     },
     "managed-ai": {
+      promise: "Quelqu’un répond toujours de votre IA.",
+      ask: "Quel système d’IA avez-vous déjà en production ?",
       name: "Managed AI", eyebrow: "Offre · Opérer",
-      headline: "Opérer, surveiller, évaluer, optimiser et améliorer les systèmes d’IA en production.",
+      headline: "Une équipe désignée surveille vos systèmes d’IA, teste chaque changement et les améliore par cycles réguliers.",
       summary: "Un service continu avec une seule équipe responsable des systèmes d’IA de votre opération, que nous les ayons construits ou non.",
       forWhom: ["Des organisations avec des systèmes d’IA en production qui ont besoin de fiabilité, de maîtrise des coûts et d’amélioration continue.", "Des équipes qui veulent étendre l’autonomie en toute sécurité à mesure que les données d’évaluation s’accumulent."],
       phases: [
@@ -234,6 +266,8 @@ const text: Record<Locale, Record<string, Text>> = {
       format: "Service mensuel avec des engagements de réponse convenus par système.",
     },
     "digital-growth-system": {
+      promise: "De la marque au lead.",
+      ask: "Où la chaîne de la marque au lead se rompt-elle aujourd’hui ?",
       name: "Système de croissance digitale", eyebrow: "Offre · Construire",
       headline: "Construire ou reconstruire l’environnement digital et le moteur de demande qui tourne dessus.",
       summary: "Marque, site, contenu, campagnes et mesure livrés comme un seul système, puis opérés avec votre équipe. La couche IA s’applique là où elle raccourcit les cycles : recherche, variantes créatives, qualification des leads et reporting.",

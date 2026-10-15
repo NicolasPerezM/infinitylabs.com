@@ -1,72 +1,54 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { WorkflowDiagram } from "@/components/system/WorkflowDiagram";
-import { ArrowIcon } from "@/components/ui/Button";
 import { SectionFrame } from "@/components/ui/SectionFrame";
-import { getSolution } from "@/content/solutions";
 import { href, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
 /**
- * AI × digital marketing (DEC-024). The marketing practice is real and staffed, so it is shown
- * in the same grammar as every other system: a full-width typed brand-to-lead chain, plus an
- * explicit split between what the marketing team runs and what the AI layer adds.
- * No results are claimed (GAP-021).
+ * AI × digital marketing (DEC-024, DEC-027). One claim, then a table in which each row is one
+ * area of the work: what the team does beside what AI adds (parallel structure means parallel
+ * content). The brand-to-lead chain lives on the Marketing Systems page. No results claimed (GAP-021).
  */
 export function GrowthMarketing({ locale }: { locale: Locale }) {
-  const d = getDictionary(locale);
-  const t = d.home.growth;
-  const solution = getSolution(locale, "marketing-systems")!;
+  const t = getDictionary(locale).home.growth;
   return (
-    <SectionFrame id="growth" title={t.title} state={t.state} stateStage="operate">
-      <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-        <div className="reveal lg:col-span-5">
-          <h2 id="growth-title" className="text-display-xl max-w-[15ch]">
-            {t.headline}
-          </h2>
-          <p className="mt-5 max-w-[46ch] text-body-lg text-text-secondary">{t.lede}</p>
-          <Link
-            href={href(locale, "/solutions/marketing-systems")}
-            data-event="solution_view"
-            className="group mt-7 inline-flex items-center gap-1.5 text-small font-medium text-text-primary underline underline-offset-4"
-          >
+    <SectionFrame id="growth" title={t.title}>
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 id="growth-title" className="text-display-xl max-w-[15ch] lg:col-span-7">
+          {t.headline}
+        </h2>
+        <div className="lg:col-span-5">
+          <p className="max-w-[44ch] text-body-lg text-text-secondary">{t.lede}</p>
+          <Link href={href(locale, "/solutions/marketing-systems")} data-event="solution_view" className="mt-3 inline-flex min-h-11 items-center text-body font-medium text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-text-primary">
             {t.cta}
-            <ArrowIcon />
           </Link>
         </div>
-
-        <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:col-span-7">
-          <div className="reveal">
-            <h3 className="label-mono border-b border-text-primary pb-3 text-text-primary">{t.teamTitle}</h3>
-            <ul className="divide-y divide-border-subtle">
-              {t.team.map((x) => (
-                <li key={x} className="py-2.5 text-small text-text-primary">
-                  {x}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="reveal" style={{ ["--reveal-delay" as string]: "80ms" }}>
-            <h3 className="label-mono flex items-center gap-2 border-b border-border-strong pb-3 text-text-primary">
-              <span aria-hidden className="inline-block h-3 w-0.5 state-gradient-vertical" />
-              {t.aiTitle}
-            </h3>
-            <ul className="divide-y divide-border-subtle">
-              {t.ai.map((x) => (
-                <li key={x} className="flex gap-3 py-2.5 text-small text-text-secondary">
-                  <span aria-hidden className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-build" />
-                  {x}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
 
-      {/* The chain is the anchor of the section: full width so six typed steps stay readable in every language. */}
-      <div className="reveal mt-12 rounded-xl border border-border-subtle bg-surface-elevated p-4 sm:p-6" style={{ ["--reveal-delay" as string]: "120ms" }}>
-        <p className="label-mono mb-5 text-text-tertiary">{t.chain}</p>
-        <WorkflowDiagram steps={solution.diagram} kinds={d.workflow.kinds} title={d.workflow.title} legend />
-      </div>
+      <table className="reveal mt-14 w-full border-collapse text-left md:mt-16">
+        <thead className="hidden md:table-header-group">
+          <tr className="border-b border-border-strong text-small font-medium text-text-secondary">
+            <th scope="col" className="w-[9rem] pb-3"><span className="sr-only">{t.areaTitle}</span></th>
+            <th scope="col" className="pb-3">{t.teamTitle}</th>
+            <th scope="col" className="pb-3">{t.aiTitle}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r, i) => (
+            <tr key={r.area} className="build-item grid gap-1 border-b border-border-subtle py-4 md:table-row md:py-0" style={{ ["--b" as string]: i } as CSSProperties}>
+              <th scope="row" className="text-left text-small font-medium text-text-tertiary md:py-5">{r.area}</th>
+              <td className="text-body-lg text-text-primary md:py-5 md:pr-8">
+                <span className="sr-only md:hidden">{t.teamTitle}: </span>
+                {r.team}
+              </td>
+              <td className="text-body-lg text-text-secondary md:py-5">
+                <span className="sr-only md:hidden">{t.aiTitle}: </span>
+                {r.ai}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </SectionFrame>
   );
 }

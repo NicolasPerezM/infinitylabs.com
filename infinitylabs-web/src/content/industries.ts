@@ -8,7 +8,7 @@ export type Industry = { name: string; where: string };
 
 const text: Record<Locale, { intro: string; items: Industry[] }> = {
   en: {
-    intro: "These systems tend to pay off wherever a process is repetitive, document-heavy, spread across several tools and measured in cost or cycle time. The environments below are where we most often find that combination.",
+    intro: "These systems fit wherever a process is repetitive, document-heavy, spread across several tools and measured in cost or cycle time. These environments often combine all four.",
     items: [
       { name: "Retail and e-commerce", where: "customer operations, order and returns workflows, catalog and content operations" },
       { name: "Insurance", where: "claims intake and document processing, policy servicing, underwriting support" },
@@ -22,7 +22,7 @@ const text: Record<Locale, { intro: string; items: Industry[] }> = {
     ],
   },
   es: {
-    intro: "Estos sistemas suelen rendir donde un proceso es repetitivo, intensivo en documentos, repartido entre varias herramientas y medido en costo o tiempo de ciclo. Los entornos de abajo son donde más encontramos esa combinación.",
+    intro: "Estos sistemas encajan donde un proceso es repetitivo, intensivo en documentos, repartido entre varias herramientas y medido en costo o tiempo de ciclo. Estos entornos suelen reunir esa combinación.",
     items: [
       { name: "Retail y comercio electrónico", where: "operaciones de clientes, flujos de pedidos y devoluciones, operaciones de catálogo y contenido" },
       { name: "Seguros", where: "ingreso y procesamiento de documentos de siniestros, servicio de pólizas, apoyo a suscripción" },
@@ -36,7 +36,7 @@ const text: Record<Locale, { intro: string; items: Industry[] }> = {
     ],
   },
   fr: {
-    intro: "Ces systèmes sont généralement rentables là où un processus est répétitif, riche en documents, réparti entre plusieurs outils et mesuré en coût ou en temps de cycle. Les environnements ci-dessous sont ceux où nous rencontrons le plus souvent cette combinaison.",
+    intro: "Ces systèmes conviennent partout où un processus est répétitif, riche en documents, réparti sur plusieurs outils et mesuré en coût ou en temps de cycle. Ces environnements réunissent souvent les quatre.",
     items: [
       { name: "Retail et e-commerce", where: "opérations client, flux de commandes et de retours, opérations de catalogue et de contenu" },
       { name: "Assurance", where: "réception et traitement des documents de sinistres, gestion des contrats, appui à la souscription" },

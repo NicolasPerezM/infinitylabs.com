@@ -187,3 +187,37 @@ Following the UX/UI research (`docs/UX_UI_AUDIT.md`), the web system was pushed 
 - **Home section** "AI × digital marketing" — the brand→lead chain rendered as a typed workflow (market signals → positioning → site and content → creative variants → campaigns and bidding → qualified lead in CRM), beside two explicit columns: *what the team runs* and *what the AI layer adds*. This is the demonstration of how AI and digital marketing combine, in the site's own visual language.
 
 **What is deliberately absent:** channel logos, ROAS or conversion figures (none are client-approved, GAP-006), "growth hacking" vocabulary, and any claim that AI replaces the marketing team. The copy states the opposite: AI writes variants and drafts; people own positioning, brand and budget.
+
+## 15. v1.3 addendum — diagrams and imagery, keynote rules (2026-10-14, DEC-026)
+
+**Diagram rules** (how Jobs built a slide, applied to system drawings):
+
+1. One diagram, one idea. If a diagram needs a paragraph to be read, it is two diagrams.
+2. Label directly. Every step type has a glyph and a colour (→| input · ▢ deterministic · ✦ AI · hub agent · person human approval · |→ output), so the typed flow needs no legend.
+3. Build, don’t dump. Parts appear in order (`.build-item` / `.build-line`, `--b` = order) once the figure is on screen; then the packet runs and each node lights as it arrives.
+4. Colour only for meaning. Grey is the default; the highlighted thing (the person who approves, the three opportunities worth building, the active stage) is the only colour in view.
+5. The layout follows the figure, not the screen. The typed flow is a container query: horizontal at ≥ 48rem of its own width, vertical below, so a narrow panel never squeezes six columns.
+6. Reduced motion shows the finished state.
+
+**Imagery rules:**
+
+- Show the product. Each solution has one illustrative screen (`ProductShot`): the system doing its job, for example an answer with sources and a confidence meter, or an invoice with one exception routed to a person. Screens sit on the dark system canvas so they read as a screen on the paper page.
+- Screens are illustrative and say so in a caption. They use generic names (“Supplier A”), no client data, and no performance numbers.
+- Pages without a product (capabilities, offers, about) use one image only: the operating loop with their stage lit (`StageLoop`).
+- No stock photography, no AI-generated people, no 3D renders.
+
+## 16. v1.4 addendum — what the expert panel removed and why (2026-10-14, DEC-027)
+
+The engineering-drawing grammar of v1.0 (§12) was audited by the design, data and UX councils and by a generic-pattern research pass. Its decorative parts read as the second wave of AI-tool defaults and were removed; the parts that carry information stay.
+
+| Kept | Removed |
+|---|---|
+| The ribbon (hero, operating model, stage loop) with stage names and the buyer’s line written on it | Ruler ticks (no unit), pulse rings, permanent node halos |
+| One hairline per section with the section name in plain type | Corner crosshairs, the right-hand “state” label, the pointer-revealed grid |
+| Mono type for what the system writes: step kinds, axes, screen chrome, language codes, ribbon stage codes | Mono uppercase eyebrows on human-written labels (54 → 7 uses) |
+| Violet / sky / mint for stage and step type; the gradient only where it draws the loop | Gradient hover sweeps, gradient footer line, gradient card bars, coloured bullet dots, tinted pill tags |
+| Diagrams that build when seen | Scroll reveals on text (75 → 9, figures only), word-by-word H1 animation on interior pages, looping packets and pulses |
+| One image per page, unframed | Boxes around diagrams, the 4-up icon-in-a-circle legend, the footer watermark, the dot rail and header section readout, the scroll cue |
+
+Two rules govern any future addition: *colour means stage or step type* and *mono means the system wrote it*.
+

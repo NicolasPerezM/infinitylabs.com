@@ -5,7 +5,6 @@ import { PageHero } from "@/components/sections/PageHero";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { ArrowIcon } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { Tag } from "@/components/ui/Tag";
 import { getOffers } from "@/content/offers";
 import { href, isLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -20,36 +19,37 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return buildMetadata(locale, { title: t.metaTitle, description: t.metaDescription, path: "/offers" });
 }
 
+const dot = { discover: "bg-discover", build: "bg-build", operate: "bg-operate" } as const;
+
+/** Engagements as an index (DEC-018, DEC-027): rows in loop order, the Sprint marked as the start. No card grid. */
 export default async function OffersPage({ params }: Params) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
-  const t = getDictionary(locale).pages.offers;
+  const d = getDictionary(locale);
+  const t = d.pages.offers;
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} stage="structure" title={t.title} lede={t.lede} readout={t.readout} />
+      <PageHero title={t.title} lede={t.lede} />
       <section aria-labelledby="offers-h" className="bg-surface-primary">
-        <Container className="py-section">
+        <Container className="py-section-sm">
           <h2 id="offers-h" className="sr-only">{t.listTitle}</h2>
-          <ul className="grid gap-4 md:grid-cols-2">
-            {getOffers(locale).map((o, i) => (
-              <li key={o.slug} className="reveal" style={{ ["--reveal-delay" as string]: `${(i % 2) * 90}ms` }}>
-                <Link href={href(locale, `/offers/${o.slug}`)} data-event="offer_view" className="group flex h-full flex-col gap-5 rounded-lg border border-border-subtle bg-surface-elevated p-6 transition-[border-color,transform] duration-150 ease-expo hover:-translate-y-0.5 hover:border-border-strong sm:p-8">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="label-mono text-text-tertiary">{o.eyebrow}</span>
-                    {o.primary && <Tag stage="discover">{t.startHere}</Tag>}
-                  </div>
-                  <h3 className="text-display-lg">{o.name}</h3>
-                  <p className="text-body text-text-secondary">{o.summary}</p>
-                  <ul className="mt-auto flex flex-col gap-1.5 border-t border-border-subtle pt-4 text-small text-text-secondary">
-                    {o.phases.map((p) => (
-                      <li key={p.name} className="flex gap-3"><span className="font-mono text-text-tertiary">→</span>{p.name}</li>
-                    ))}
-                  </ul>
-                  <span className="inline-flex items-center gap-1.5 text-small font-medium text-text-primary">
-                    {t.details}
-                    <ArrowIcon className="transition-transform duration-150 group-hover:translate-x-0.5" />
+          <ul className="flex flex-col divide-y divide-border-subtle border-y border-border-strong">
+            {getOffers(locale).map((o) => (
+              <li key={o.slug}>
+                <Link href={href(locale, `/offers/${o.slug}`)} data-event="offer_view" className="group grid grid-cols-[1fr_auto] items-center gap-4 py-7 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] md:gap-6">
+                  <span className="col-start-1 row-start-1 flex flex-col gap-1.5">
+                    <span className="flex items-center gap-3">
+                      <span aria-hidden className={`size-2 shrink-0 rounded-full ${dot[o.stage]}`} />
+                      <span className="text-[clamp(1.4rem,2.4vw,1.9rem)] font-semibold leading-[1.1] tracking-[-0.02em]">{o.name}</span>
+                    </span>
+                    <span className="pl-5 text-small text-text-tertiary">
+                      {d.stages[o.stage].name}
+                      {o.primary && <span className="font-medium text-discover-text"> · {t.startHere}</span>}
+                    </span>
                   </span>
+                  <span className="col-span-2 row-start-2 text-body-lg text-text-secondary md:col-span-1 md:col-start-2 md:row-start-1">{o.promise}</span>
+                  <ArrowIcon className="col-start-2 row-start-1 transition-transform duration-150 group-hover:translate-x-0.5 md:col-start-3" />
                 </Link>
               </li>
             ))}

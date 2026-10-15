@@ -2,7 +2,8 @@ import type { Locale } from "@/i18n/config";
 import type { Stage } from "./operating-model";
 
 export type StepKind = "input" | "deterministic" | "ai" | "agent" | "human" | "output";
-export type SolutionDiagramStep = { label: string; kind: StepKind };
+/** `when` marks a conditional step (only some items take it): drawn with dashed links and its condition. */
+export type SolutionDiagramStep = { label: string; kind: StepKind; when?: string };
 
 export type Solution = {
   slug: string;
@@ -10,6 +11,8 @@ export type Solution = {
   capabilities: string[];
   offers: string[];
   name: string;
+  /** Short promise (≤ 8 words): the line a visitor should remember. */
+  promise: string;
   eyebrow: string;
   headline: string;
   summary: string;
@@ -20,24 +23,25 @@ export type Solution = {
   diagram: SolutionDiagramStep[];
 };
 
-type Base = { slug: string; stageEmphasis: Stage; capabilities: string[]; offers: string[]; kinds: StepKind[] };
-type Text = { name: string; eyebrow: string; headline: string; summary: string; problem: string[]; build: string[]; outcomes: string[]; environments: string[]; steps: string[] };
+type Base = { slug: string; stageEmphasis: Stage; capabilities: string[]; offers: string[]; kinds: StepKind[]; when?: number };
+type Text = { name: string; promise: string; eyebrow: string; headline: string; summary: string; problem: string[]; build: string[]; outcomes: string[]; environments: string[]; steps: string[]; when?: string };
 
 const base: Base[] = [
-  { slug: "knowledge-ai", stageEmphasis: "build", capabilities: ["ai-engineering", "data-ai", "ai-evaluation", "managed-ai"], offers: ["enterprise-knowledge-document-ai", "managed-ai"], kinds: ["input", "deterministic", "ai", "ai", "human", "output"] },
-  { slug: "document-intelligence", stageEmphasis: "build", capabilities: ["ai-engineering", "agentic-systems", "ai-evaluation", "managed-ai"], offers: ["enterprise-knowledge-document-ai", "managed-ai"], kinds: ["input", "ai", "deterministic", "human", "deterministic", "output"] },
-  { slug: "customer-operations", stageEmphasis: "operate", capabilities: ["agentic-systems", "ai-engineering", "ai-evaluation", "managed-ai"], offers: ["agentic-workflow-systems", "managed-ai"], kinds: ["input", "ai", "deterministic", "agent", "human", "output"] },
+  { slug: "knowledge-ai", stageEmphasis: "build", capabilities: ["ai-engineering", "data-ai", "ai-evaluation", "managed-ai"], offers: ["enterprise-knowledge-document-ai", "managed-ai"], kinds: ["input", "deterministic", "ai", "ai", "human", "output"], when: 4 },
+  { slug: "document-intelligence", stageEmphasis: "build", capabilities: ["ai-engineering", "agentic-systems", "ai-evaluation", "managed-ai"], offers: ["enterprise-knowledge-document-ai", "managed-ai"], kinds: ["input", "ai", "deterministic", "human", "deterministic", "output"], when: 3 },
+  { slug: "customer-operations", stageEmphasis: "operate", capabilities: ["agentic-systems", "ai-engineering", "ai-evaluation", "managed-ai"], offers: ["agentic-workflow-systems", "managed-ai"], kinds: ["input", "ai", "deterministic", "agent", "human", "output"], when: 4 },
   { slug: "revenue-systems", stageEmphasis: "build", capabilities: ["agentic-systems", "data-ai", "ai-evaluation"], offers: ["agentic-workflow-systems", "ai-opportunity-sprint"], kinds: ["input", "agent", "deterministic", "ai", "human", "output"] },
   { slug: "intelligent-operations", stageEmphasis: "operate", capabilities: ["ai-transformation", "agentic-systems", "ai-engineering", "managed-ai"], offers: ["ai-opportunity-sprint", "agentic-workflow-systems", "managed-ai"], kinds: ["input", "deterministic", "ai", "human", "agent", "output"] },
-  { slug: "marketing-systems", stageEmphasis: "operate", capabilities: ["growth-engineering", "data-ai", "agentic-systems", "managed-ai"], offers: ["digital-growth-system", "managed-ai"], kinds: ["input", "human", "deterministic", "ai", "agent", "output"] },
+  { slug: "marketing-systems", stageEmphasis: "operate", capabilities: ["growth-engineering", "data-ai", "agentic-systems", "managed-ai"], offers: ["digital-growth-system", "managed-ai"], kinds: ["input", "ai", "human", "ai", "agent", "output"] },
 ];
 
 const text: Record<Locale, Record<string, Text>> = {
   en: {
     "knowledge-ai": {
+      promise: "Answers you can verify.",
       name: "Enterprise Knowledge",
       eyebrow: "Solution",
-      headline: "Answers with sources, permissions and a quality score. Not a chatbot over a folder.",
+      headline: "The same questions get answered every week, from memory. The system answers with the source, respects the asker’s permissions and says “I don’t know” when there is no basis.",
       summary: "A governed knowledge system that lets teams ask questions across policies, procedures, contracts and internal expertise, and get answers they can verify and act on.",
       problem: [
         "Knowledge lives in drives, wikis, tickets, inboxes and a few experienced people. The same questions are answered again every week.",
@@ -53,12 +57,14 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
       outcomes: ["Faster resolution of internal and customer questions", "Consistent answers across teams and channels", "Less dependence on a handful of experts", "A measurable quality baseline you can report on"],
       environments: ["SharePoint, Google Drive, Confluence, Notion", "Policy and procedure libraries", "Contracts and legal repositories", "Helpdesk and ticketing history"],
-      steps: ["Question", "Permission check", "Retrieve sources", "Compose answer + citations", "Low confidence → expert", "Answer + feedback"],
+      steps: ["Question", "Permission check", "Retrieve sources", "Compose answer + citations", "Expert review", "Answer + feedback"],
+      when: "only when confidence is low",
     },
     "document-intelligence": {
+      promise: "Less typing. More control.",
       name: "Document Intelligence",
       eyebrow: "Solution",
-      headline: "Turn document-heavy processes into controlled pipelines with human review where it matters.",
+      headline: "Today someone reads and retypes every document. The system extracts, validates against your ERP, and only the exceptions reach a person.",
       summary: "Extraction, classification, validation and routing for invoices, claims, contracts, forms and onboarding files, with confidence thresholds, exception queues and an audit trail.",
       problem: ["High volumes of documents are read, re-typed and checked by people, one at a time.", "Errors surface late, in the ERP or in front of the customer.", "Peaks create backlogs; hiring for peaks is expensive and slow."],
       build: [
@@ -68,14 +74,16 @@ const text: Record<Locale, Record<string, Text>> = {
         "A reviewer interface that captures corrections and turns them into evaluation data.",
         "End-to-end traceability: which document, which version, which rule, who approved.",
       ],
-      outcomes: ["Shorter cycle times from receipt to posting or decision", "Fewer downstream errors and reworks", "Capacity that scales with volume instead of headcount", "A defensible audit trail for every automated decision"],
+      outcomes: ["Shorter cycle times from receipt to posting or decision", "Fewer downstream errors and reworks", "More volume with the same team", "A defensible audit trail for every automated decision"],
       environments: ["Invoices, purchase orders, remittances", "Claims, forms, KYC and onboarding files", "Contracts and amendments", "ERP, DMS and workflow tools"],
-      steps: ["Inbound document", "Classify + extract", "Validate vs. ERP rules", "Exception review", "Post to system", "Monitor quality"],
+      steps: ["Inbound document", "Classify + extract", "Validate vs. ERP rules", "Exception review", "Post to ERP", "Posted + audit trail"],
+      when: "exceptions only",
     },
     "customer-operations": {
+      promise: "Your team handles the cases that need judgment.",
       name: "Customer Operations",
       eyebrow: "Solution",
-      headline: "AI-assisted and AI-handled service tiers, with escalation and quality control designed in.",
+      headline: "Your agents spend the day on lookups and repeated replies. The system resolves the routine and hands the complex cases to a person with the context ready.",
       summary: "Support and service operations where the system resolves routine requests. Complex ones reach a person with the context already prepared, and every interaction is measured for quality.",
       problem: ["Agents spend most of their time on lookups, drafting and repetitive requests instead of on the cases that need judgment.", "Service quality varies by person, shift and channel.", "Volume grows faster than the team, and SLAs slip during peaks."],
       build: [
@@ -88,12 +96,14 @@ const text: Record<Locale, Record<string, Text>> = {
       outcomes: ["Faster first response and resolution for routine requests", "More agent capacity for complex, high-value cases", "Consistent tone and policy compliance across channels", "Visibility into what the system handles and what it escalates"],
       environments: ["Helpdesk and CRM platforms", "WhatsApp Business, email, web chat", "Order, billing and logistics systems", "Knowledge bases and policies"],
       steps: ["Customer request", "Classify intent", "Fetch account context", "Resolve or draft", "Escalate with context", "Reply + QA score"],
+      when: "only when unresolved",
     },
     "revenue-systems": {
+      promise: "Your team sells with the research done.",
       name: "Revenue Systems",
       eyebrow: "Solution",
-      headline: "Research, qualification and proposal workflows that keep the CRM honest and the team selling.",
-      summary: "Systems that prepare account research, qualify inbound demand, draft proposals and keep records current. Revenue teams spend their time in conversations, not in tabs.",
+      headline: "Every rep rebuilds the research and the proposal from scratch. The system prepares them and keeps the CRM current; your team approves and sells.",
+      summary: "Systems that prepare account research, qualify inbound demand, draft proposals and keep records current. Revenue teams spend their time talking to customers.",
       problem: ["Leads wait hours or days for a first qualified response.", "Proposals and account research are rebuilt from scratch by every rep.", "CRM data decays because updating it competes with selling."],
       build: [
         "Inbound qualification workflows with clear handoff rules to people.",
@@ -107,9 +117,10 @@ const text: Record<Locale, Record<string, Text>> = {
       steps: ["Inbound lead", "Enrich + research", "Qualify vs. ICP rules", "Draft proposal", "Rep approval", "CRM updated"],
     },
     "intelligent-operations": {
+      promise: "Every request knows where it is and who decides.",
       name: "Intelligent Operations",
       eyebrow: "Solution",
-      headline: "Back-office processes redesigned as orchestrated workflows: automation, AI and approvals in one system.",
+      headline: "Today a request crosses five tools and nobody knows where it is. The system moves it through states, with owners and approvals, and records every decision.",
       summary: "Procurement, finance, HR and compliance processes where manual handoffs are replaced by an orchestrated workflow, with AI applied only to the steps that need judgment.",
       problem: ["Processes span five tools and three teams, held together by email and spreadsheets.", "Nobody can say where a request is, or why it stopped.", "Controls are enforced by memory and by the audit at year end."],
       build: [
@@ -119,14 +130,15 @@ const text: Record<Locale, Record<string, Text>> = {
         "Operational dashboards: throughput, cycle time, exceptions, cost per transaction.",
         "Governance built in: who can approve what, and a record of every decision.",
       ],
-      outcomes: ["Predictable cycle times and fewer stalled requests", "Lower cost per transaction as volume grows", "Controls that are enforced by the system, not by reminders", "One place to see the state of the process"],
+      outcomes: ["Predictable cycle times and fewer stalled requests", "Lower cost per transaction as volume grows", "Controls the system enforces at every step", "One place to see the state of the process"],
       environments: ["ERP, HRIS and procurement suites", "Ticketing and workflow tools", "Spreadsheets and email-driven processes", "Reporting and compliance requirements"],
       steps: ["Request", "Validate + enrich", "Assess + recommend", "Approval gate", "Execute in systems", "Dashboard + audit"],
     },
     "marketing-systems": {
+      promise: "Every campaign, instrumented.",
       name: "Marketing Systems",
       eyebrow: "Solution",
-      headline: "From positioning to qualified lead, run as one measured system.",
+      headline: "Brand, site, content and campaigns are usually handled by different hands. Here one team runs them, measured from first contact to qualified opportunity.",
       summary: "Brand, digital presence, content and media operated as a single instrumented system. A marketing team works inside the same engineering discipline we apply to operations, so every campaign is measurable and every lead arrives qualified.",
       problem: [
         "Brand, website, content and campaigns are built by different hands and stop matching each other.",
@@ -142,20 +154,21 @@ const text: Record<Locale, Record<string, Text>> = {
         "Measurement wired end to end: from first touch to qualified opportunity, in your own dashboard.",
       ],
       outcomes: [
-        "One system from brand to lead instead of disconnected suppliers",
+        "One system from brand to lead",
         "Faster creative and campaign cycles without losing brand control",
         "Leads that reach sales already qualified and enriched",
         "Spend decisions defensible with data you own",
       ],
       environments: ["Brand, website and landing pages", "SEO, content and organic channels", "Search, social and programmatic media", "CRM, analytics and attribution"],
-      steps: ["Market and competitor signals", "Positioning and brand system", "Site, landings and content", "Creative variants", "Campaigns and bidding", "Qualified lead in CRM"],
+      steps: ["Market and competitor signals", "Research and positioning", "Brand and messages approved", "Creative variants", "Campaigns and bids", "Qualified lead in the CRM"],
     },
   },
   es: {
     "knowledge-ai": {
+      promise: "Respuestas que se pueden verificar.",
       name: "Conocimiento empresarial",
       eyebrow: "Solución",
-      headline: "Respuestas con fuentes, permisos y una puntuación de calidad. No un chatbot sobre una carpeta.",
+      headline: "Las mismas preguntas se responden cada semana, de memoria. El sistema responde con la fuente, respeta los permisos de quien pregunta y dice «no lo sé» cuando no hay base.",
       summary: "Un sistema de conocimiento gobernado que permite a los equipos preguntar sobre políticas, procedimientos, contratos y experiencia interna, y obtener respuestas que pueden verificar y usar.",
       problem: [
         "El conocimiento vive en unidades compartidas, wikis, tickets, bandejas de entrada y unas pocas personas con experiencia. Las mismas preguntas se responden de nuevo cada semana.",
@@ -171,12 +184,14 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
       outcomes: ["Resolución más rápida de preguntas internas y de clientes", "Respuestas consistentes entre equipos y canales", "Menos dependencia de un puñado de expertos", "Una línea base de calidad medible sobre la que puedes reportar"],
       environments: ["SharePoint, Google Drive, Confluence, Notion", "Bibliotecas de políticas y procedimientos", "Contratos y repositorios legales", "Historial de mesa de ayuda y tickets"],
-      steps: ["Pregunta", "Verificar permisos", "Recuperar fuentes", "Redactar respuesta + citas", "Baja confianza → experto", "Respuesta + retroalimentación"],
+      steps: ["Pregunta", "Verificar permisos", "Recuperar fuentes", "Redactar respuesta + citas", "Revisión de un experto", "Respuesta + retroalimentación"],
+      when: "solo si la confianza es baja",
     },
     "document-intelligence": {
+      promise: "Menos digitación. Más control.",
       name: "Inteligencia documental",
       eyebrow: "Solución",
-      headline: "Convierte procesos intensivos en documentos en pipelines controlados con revisión humana donde importa.",
+      headline: "Hoy alguien lee y transcribe cada documento. El sistema extrae, valida contra tu ERP y solo las excepciones llegan a una persona.",
       summary: "Extracción, clasificación, validación y enrutamiento de facturas, siniestros, contratos, formularios y archivos de vinculación, con umbrales de confianza, colas de excepciones y trazabilidad de auditoría.",
       problem: ["Grandes volúmenes de documentos se leen, se transcriben y se revisan a mano, uno por uno.", "Los errores aparecen tarde, en el ERP o frente al cliente.", "Los picos generan atrasos; contratar para los picos es caro y lento."],
       build: [
@@ -186,14 +201,16 @@ const text: Record<Locale, Record<string, Text>> = {
         "Una interfaz de revisión que captura correcciones y las convierte en datos de evaluación.",
         "Trazabilidad de punta a punta: qué documento, qué versión, qué regla, quién aprobó.",
       ],
-      outcomes: ["Tiempos de ciclo más cortos desde la recepción hasta la contabilización o la decisión", "Menos errores y retrabajos aguas abajo", "Capacidad que escala con el volumen y no con la plantilla", "Una traza de auditoría defendible para cada decisión automatizada"],
+      outcomes: ["Tiempos de ciclo más cortos desde la recepción hasta la contabilización o la decisión", "Menos errores y retrabajos aguas abajo", "Más volumen con el mismo equipo", "Una traza de auditoría defendible para cada decisión automatizada"],
       environments: ["Facturas, órdenes de compra, remesas", "Siniestros, formularios, KYC y archivos de vinculación", "Contratos y adendas", "ERP, gestores documentales y herramientas de flujo"],
-      steps: ["Documento entrante", "Clasificar + extraer", "Validar contra reglas del ERP", "Revisión de excepciones", "Registrar en el sistema", "Monitorear calidad"],
+      steps: ["Documento entrante", "Clasificar + extraer", "Validar contra reglas del ERP", "Revisión de excepciones", "Contabilizar en el ERP", "Contabilizado + traza de auditoría"],
+      when: "solo excepciones",
     },
     "customer-operations": {
+      promise: "Tu equipo atiende los casos que necesitan criterio.",
       name: "Operaciones de clientes",
       eyebrow: "Solución",
-      headline: "Niveles de servicio asistidos y atendidos por IA, con escalamiento y control de calidad diseñados desde el inicio.",
+      headline: "Tus agentes pasan el día en búsquedas y respuestas repetidas. El sistema resuelve lo rutinario y entrega lo complejo a una persona con el contexto listo.",
       summary: "Operaciones de soporte y servicio donde el sistema resuelve las solicitudes rutinarias. Las complejas llegan a una persona con el contexto ya preparado, y cada interacción se mide en calidad.",
       problem: ["Los agentes dedican la mayor parte del tiempo a búsquedas, redacción y solicitudes repetitivas en lugar de a los casos que requieren criterio.", "La calidad del servicio varía según la persona, el turno y el canal.", "El volumen crece más rápido que el equipo y los SLA se incumplen en los picos."],
       build: [
@@ -206,12 +223,14 @@ const text: Record<Locale, Record<string, Text>> = {
       outcomes: ["Primera respuesta y resolución más rápidas en solicitudes rutinarias", "Más capacidad de los agentes para casos complejos y de alto valor", "Tono consistente y cumplimiento de políticas en todos los canales", "Visibilidad de qué atiende el sistema y qué escala"],
       environments: ["Plataformas de mesa de ayuda y CRM", "WhatsApp Business, correo, chat web", "Sistemas de pedidos, facturación y logística", "Bases de conocimiento y políticas"],
       steps: ["Solicitud del cliente", "Clasificar intención", "Traer contexto de la cuenta", "Resolver o redactar", "Escalar con contexto", "Respuesta + puntuación de calidad"],
+      when: "solo si no se resuelve",
     },
     "revenue-systems": {
+      promise: "Tu equipo vende con la investigación hecha.",
       name: "Sistemas de ingresos",
       eyebrow: "Solución",
-      headline: "Flujos de investigación, calificación y propuestas que mantienen el CRM honesto y al equipo vendiendo.",
-      summary: "Sistemas que preparan la investigación de cuentas, califican la demanda entrante, redactan propuestas y mantienen los registros al día. Los equipos comerciales pasan el tiempo en conversaciones, no en pestañas.",
+      headline: "Cada comercial rehace la investigación y la propuesta desde cero. El sistema las prepara y mantiene el CRM al día; tu equipo aprueba y vende.",
+      summary: "Sistemas que preparan la investigación de cuentas, califican la demanda entrante, redactan propuestas y mantienen los registros al día. Los equipos comerciales pasan el tiempo conversando con clientes.",
       problem: ["Los leads esperan horas o días por una primera respuesta calificada.", "Cada comercial reconstruye desde cero las propuestas y la investigación de cuentas.", "Los datos del CRM se degradan porque actualizarlos compite con vender."],
       build: [
         "Flujos de calificación de entrada con reglas claras de traspaso a personas.",
@@ -225,9 +244,10 @@ const text: Record<Locale, Record<string, Text>> = {
       steps: ["Lead entrante", "Enriquecer + investigar", "Calificar contra reglas de ICP", "Redactar propuesta", "Aprobación del comercial", "CRM actualizado"],
     },
     "intelligent-operations": {
+      promise: "Cada solicitud sabe dónde está y quién decide.",
       name: "Operaciones inteligentes",
       eyebrow: "Solución",
-      headline: "Procesos de back-office rediseñados como flujos orquestados: automatización, IA y aprobaciones en un solo sistema.",
+      headline: "Hoy una solicitud cruza cinco herramientas y nadie sabe dónde está. El sistema la mueve por estados, con responsables y aprobaciones, y registra cada decisión.",
       summary: "Procesos de compras, finanzas, talento y cumplimiento donde un flujo orquestado reemplaza los traspasos manuales. La IA se aplica solo a los pasos que requieren criterio.",
       problem: ["Los procesos atraviesan cinco herramientas y tres equipos, sostenidos por correos y hojas de cálculo.", "Nadie puede decir dónde está una solicitud ni por qué se detuvo.", "Los controles se aplican de memoria y en la auditoría de fin de año."],
       build: [
@@ -237,14 +257,15 @@ const text: Record<Locale, Record<string, Text>> = {
         "Tableros operativos: rendimiento, tiempo de ciclo, excepciones, costo por transacción.",
         "Gobierno incorporado: quién puede aprobar qué y un registro de cada decisión.",
       ],
-      outcomes: ["Tiempos de ciclo predecibles y menos solicitudes estancadas", "Menor costo por transacción a medida que crece el volumen", "Controles aplicados por el sistema, no por recordatorios", "Un solo lugar para ver el estado del proceso"],
+      outcomes: ["Tiempos de ciclo predecibles y menos solicitudes estancadas", "Menor costo por transacción a medida que crece el volumen", "Controles que el sistema aplica en cada paso", "Un solo lugar para ver el estado del proceso"],
       environments: ["Suites de ERP, talento y compras", "Herramientas de tickets y flujos", "Procesos basados en hojas de cálculo y correo", "Requisitos de reporte y cumplimiento"],
       steps: ["Solicitud", "Validar + enriquecer", "Evaluar + recomendar", "Compuerta de aprobación", "Ejecutar en los sistemas", "Tablero + auditoría"],
     },
     "marketing-systems": {
+      promise: "Cada campaña, instrumentada.",
       name: "Sistemas de marketing",
       eyebrow: "Solución",
-      headline: "Del posicionamiento al lead calificado, operado como un solo sistema medible.",
+      headline: "Marca, sitio, contenido y campañas suelen hacerlos manos distintas. Aquí los opera un solo equipo, medidos del primer contacto a la oportunidad calificada.",
       summary: "Marca, presencia digital, contenido y medios operados como un sistema instrumentado. Un equipo de marketing trabaja con la misma disciplina de ingeniería que aplicamos a las operaciones: cada campaña se mide y cada lead llega calificado.",
       problem: [
         "La marca, el sitio, el contenido y las campañas los construyen manos distintas y dejan de coincidir entre sí.",
@@ -260,20 +281,21 @@ const text: Record<Locale, Record<string, Text>> = {
         "Medición conectada de punta a punta: del primer contacto a la oportunidad calificada, en un tablero propio.",
       ],
       outcomes: [
-        "Un solo sistema de la marca al lead, en lugar de proveedores desconectados",
+        "Un solo sistema de la marca al lead",
         "Ciclos creativos y de campaña más rápidos sin perder control de marca",
         "Leads que llegan a ventas ya calificados y enriquecidos",
         "Decisiones de inversión defendibles con datos propios",
       ],
       environments: ["Marca, sitio y landing pages", "SEO, contenido y canales orgánicos", "Medios en buscadores, redes y programática", "CRM, analítica y atribución"],
-      steps: ["Señales de mercado y competencia", "Posicionamiento y marca", "Sitio, landings y contenido", "Variantes creativas", "Campañas y pujas", "Lead calificado en el CRM"],
+      steps: ["Señales de mercado y competencia", "Investigación y posicionamiento", "Marca y mensajes aprobados", "Variantes creativas", "Campañas y pujas", "Lead calificado en el CRM"],
     },
   },
   fr: {
     "knowledge-ai": {
+      promise: "Des réponses vérifiables.",
       name: "Connaissance d’entreprise",
       eyebrow: "Solution",
-      headline: "Des réponses sourcées, avec permissions et score de qualité. Pas un chatbot posé sur un dossier.",
+      headline: "Les mêmes questions reçoivent une réponse chaque semaine, de mémoire. Le système répond avec la source, respecte les droits de la personne qui demande et dit « je ne sais pas » quand il n’y a pas de base.",
       summary: "Un système de connaissance gouverné qui permet aux équipes d’interroger politiques, procédures, contrats et expertise interne, et d’obtenir des réponses vérifiables et exploitables.",
       problem: [
         "La connaissance vit dans des disques partagés, des wikis, des tickets, des boîtes mail et quelques personnes expérimentées. Les mêmes questions reçoivent une réponse chaque semaine.",
@@ -289,12 +311,14 @@ const text: Record<Locale, Record<string, Text>> = {
       ],
       outcomes: ["Résolution plus rapide des questions internes et clients", "Des réponses cohérentes entre équipes et canaux", "Moins de dépendance à une poignée d’experts", "Une base de qualité mesurable sur laquelle rendre compte"],
       environments: ["SharePoint, Google Drive, Confluence, Notion", "Bibliothèques de politiques et de procédures", "Contrats et dépôts juridiques", "Historique helpdesk et tickets"],
-      steps: ["Question", "Vérification des permissions", "Recherche des sources", "Rédaction réponse + citations", "Faible confiance → expert", "Réponse + retour"],
+      steps: ["Question", "Vérification des permissions", "Recherche des sources", "Rédaction réponse + citations", "Revue par un expert", "Réponse + retour"],
+      when: "seulement si la confiance est faible",
     },
     "document-intelligence": {
+      promise: "Moins de saisie. Plus de contrôle.",
       name: "Intelligence documentaire",
       eyebrow: "Solution",
-      headline: "Transformer les processus riches en documents en pipelines contrôlés, avec revue humaine là où ça compte.",
+      headline: "Aujourd’hui, quelqu’un lit et ressaisit chaque document. Le système extrait, valide selon votre ERP, et seules les exceptions arrivent à une personne.",
       summary: "Extraction, classification, validation et routage des factures, sinistres, contrats, formulaires et dossiers d’onboarding, avec seuils de confiance, files d’exceptions et piste d’audit.",
       problem: ["De gros volumes de documents sont lus, ressaisis et vérifiés par des personnes, un par un.", "Les erreurs apparaissent tard, dans l’ERP ou face au client.", "Les pics créent des retards ; recruter pour les pics est coûteux et lent."],
       build: [
@@ -304,14 +328,16 @@ const text: Record<Locale, Record<string, Text>> = {
         "Une interface de revue qui capture les corrections et les transforme en données d’évaluation.",
         "Traçabilité de bout en bout : quel document, quelle version, quelle règle, qui a approuvé.",
       ],
-      outcomes: ["Des temps de cycle plus courts de la réception à la comptabilisation ou à la décision", "Moins d’erreurs et de reprises en aval", "Une capacité qui suit le volume plutôt que les effectifs", "Une piste d’audit défendable pour chaque décision automatisée"],
+      outcomes: ["Des temps de cycle plus courts de la réception à la comptabilisation ou à la décision", "Moins d’erreurs et de reprises en aval", "Plus de volume avec la même équipe", "Une piste d’audit défendable pour chaque décision automatisée"],
       environments: ["Factures, bons de commande, avis de paiement", "Sinistres, formulaires, KYC et dossiers d’onboarding", "Contrats et avenants", "ERP, GED et outils de workflow"],
-      steps: ["Document entrant", "Classer + extraire", "Valider vs règles ERP", "Revue des exceptions", "Enregistrer dans le système", "Surveiller la qualité"],
+      steps: ["Document entrant", "Classer + extraire", "Valider vs règles ERP", "Revue des exceptions", "Comptabiliser dans l’ERP", "Comptabilisé + piste d’audit"],
+      when: "exceptions uniquement",
     },
     "customer-operations": {
+      promise: "Votre équipe traite les cas qui demandent du jugement.",
       name: "Opérations client",
       eyebrow: "Solution",
-      headline: "Des niveaux de service assistés et pris en charge par l’IA, avec escalade et contrôle qualité intégrés.",
+      headline: "Vos conseillers passent la journée en recherches et en réponses répétées. Le système résout la routine et confie les cas complexes à une personne, contexte prêt.",
       summary: "Des opérations de support et de service où le système résout les demandes courantes. Les cas complexes arrivent à une personne avec le contexte déjà préparé, et chaque interaction est mesurée en qualité.",
       problem: ["Les agents passent l’essentiel de leur temps en recherches, rédaction et demandes répétitives plutôt que sur les cas qui demandent du jugement.", "La qualité de service varie selon la personne, l’équipe et le canal.", "Le volume croît plus vite que l’équipe et les SLA dérapent lors des pics."],
       build: [
@@ -324,12 +350,14 @@ const text: Record<Locale, Record<string, Text>> = {
       outcomes: ["Première réponse et résolution plus rapides pour les demandes courantes", "Plus de capacité des agents pour les cas complexes à forte valeur", "Un ton cohérent et le respect des politiques sur tous les canaux", "Une visibilité sur ce que le système traite et ce qu’il escalade"],
       environments: ["Plateformes helpdesk et CRM", "WhatsApp Business, e-mail, chat web", "Systèmes de commandes, de facturation et de logistique", "Bases de connaissance et politiques"],
       steps: ["Demande client", "Classer l’intention", "Récupérer le contexte du compte", "Résoudre ou rédiger", "Escalader avec contexte", "Réponse + score qualité"],
+      when: "seulement si non résolu",
     },
     "revenue-systems": {
+      promise: "Votre équipe vend avec la recherche déjà faite.",
       name: "Systèmes de revenus",
       eyebrow: "Solution",
-      headline: "Des flux de recherche, de qualification et de propositions qui gardent le CRM honnête et l’équipe en train de vendre.",
-      summary: "Des systèmes qui préparent la recherche sur les comptes, qualifient la demande entrante, rédigent des propositions et tiennent les fiches à jour. Les équipes commerciales passent leur temps en conversation, pas dans des onglets.",
+      headline: "Chaque commercial refait la recherche et la proposition de zéro. Le système les prépare et tient le CRM à jour ; votre équipe valide et vend.",
+      summary: "Des systèmes qui préparent la recherche sur les comptes, qualifient la demande entrante, rédigent des propositions et tiennent les fiches à jour. Les équipes commerciales passent leur temps à parler aux clients.",
       problem: ["Les leads attendent des heures ou des jours une première réponse qualifiée.", "Propositions et recherche sur les comptes sont refaites de zéro par chaque commercial.", "Les données CRM se dégradent parce que les mettre à jour concurrence la vente."],
       build: [
         "Des flux de qualification entrante avec des règles de passation claires vers les personnes.",
@@ -343,9 +371,10 @@ const text: Record<Locale, Record<string, Text>> = {
       steps: ["Lead entrant", "Enrichir + rechercher", "Qualifier vs règles ICP", "Rédiger la proposition", "Approbation du commercial", "CRM mis à jour"],
     },
     "intelligent-operations": {
+      promise: "Chaque demande sait où elle en est et qui décide.",
       name: "Opérations intelligentes",
       eyebrow: "Solution",
-      headline: "Des processus back-office repensés en flux orchestrés : automatisation, IA et approbations dans un seul système.",
+      headline: "Aujourd’hui, une demande traverse cinq outils et personne ne sait où elle en est. Le système la fait avancer par états, avec des responsables et des approbations, et enregistre chaque décision.",
       summary: "Des processus achats, finance, RH et conformité où les passations manuelles sont remplacées par un flux orchestré, l’IA n’étant appliquée qu’aux étapes qui demandent du jugement.",
       problem: ["Les processus traversent cinq outils et trois équipes, tenus ensemble par des e-mails et des tableurs.", "Personne ne peut dire où en est une demande, ni pourquoi elle s’est arrêtée.", "Les contrôles reposent sur la mémoire et sur l’audit de fin d’année."],
       build: [
@@ -355,14 +384,15 @@ const text: Record<Locale, Record<string, Text>> = {
         "Des tableaux de bord opérationnels : débit, temps de cycle, exceptions, coût par transaction.",
         "Une gouvernance intégrée : qui peut approuver quoi, et un enregistrement de chaque décision.",
       ],
-      outcomes: ["Des temps de cycle prévisibles et moins de demandes bloquées", "Un coût par transaction plus bas à mesure que le volume croît", "Des contrôles appliqués par le système, pas par des rappels", "Un seul endroit pour voir l’état du processus"],
+      outcomes: ["Des temps de cycle prévisibles et moins de demandes bloquées", "Un coût par transaction plus bas à mesure que le volume croît", "Des contrôles que le système applique à chaque étape", "Un seul endroit pour voir l’état du processus"],
       environments: ["Suites ERP, SIRH et achats", "Outils de tickets et de workflow", "Processus pilotés par tableurs et e-mails", "Exigences de reporting et de conformité"],
       steps: ["Demande", "Valider + enrichir", "Évaluer + recommander", "Porte d’approbation", "Exécuter dans les systèmes", "Tableau de bord + audit"],
     },
     "marketing-systems": {
+      promise: "Chaque campagne, instrumentée.",
       name: "Systèmes marketing",
       eyebrow: "Solution",
-      headline: "Du positionnement au lead qualifié, opéré comme un seul système mesuré.",
+      headline: "Marque, site, contenu et campagnes passent souvent par des mains différentes. Ici, une seule équipe les opère, mesurés du premier contact à l’opportunité qualifiée.",
       summary: "Marque, présence digitale, contenu et médias opérés comme un système instrumenté. Une équipe marketing travaille avec la discipline d’ingénierie que nous appliquons aux opérations : chaque campagne se mesure et chaque lead arrive qualifié.",
       problem: [
         "La marque, le site, le contenu et les campagnes sont construits par des mains différentes et finissent par ne plus concorder.",
@@ -378,13 +408,13 @@ const text: Record<Locale, Record<string, Text>> = {
         "Mesure câblée de bout en bout : du premier contact à l’opportunité qualifiée, dans votre propre tableau de bord.",
       ],
       outcomes: [
-        "Un seul système de la marque au lead, au lieu de prestataires déconnectés",
+        "Un seul système de la marque au lead",
         "Des cycles créatifs et de campagne plus rapides sans perdre le contrôle de la marque",
         "Des leads qui arrivent au commerce déjà qualifiés et enrichis",
         "Des décisions d’investissement défendables avec vos propres données",
       ],
       environments: ["Marque, site et landing pages", "SEO, contenu et canaux organiques", "Médias search, social et programmatique", "CRM, analytique et attribution"],
-      steps: ["Signaux marché et concurrence", "Positionnement et marque", "Site, landings et contenu", "Variantes créatives", "Campagnes et enchères", "Lead qualifié dans le CRM"],
+      steps: ["Signaux marché et concurrence", "Recherche et positionnement", "Marque et messages validés", "Variantes créatives", "Campagnes et enchères", "Lead qualifié dans le CRM"],
     },
   },
 };
@@ -398,6 +428,7 @@ export function getSolutions(locale: Locale): Solution[] {
       capabilities: b.capabilities,
       offers: b.offers,
       name: t.name,
+      promise: t.promise,
       eyebrow: t.eyebrow,
       headline: t.headline,
       summary: t.summary,
@@ -405,7 +436,7 @@ export function getSolutions(locale: Locale): Solution[] {
       build: t.build,
       outcomes: t.outcomes,
       environments: t.environments,
-      diagram: b.kinds.map((kind, i) => ({ kind, label: t.steps[i] })),
+      diagram: b.kinds.map((kind, i) => ({ kind, label: t.steps[i], when: i === b.when ? t.when : undefined })),
     };
   });
 }
