@@ -55,6 +55,7 @@
   --state-operate-text: var(--state-operate-deep);
   --state-structure-text: var(--state-structure);
   --border-input: #767b93;
+  --state-error: #b42318;
   --grid-line: rgba(15, 16, 32, 0.07);
   --hatch: rgba(15, 16, 32, 0.62);
   --elevation-card: none;
@@ -88,6 +89,7 @@
   --state-operate-text: #8ff0da;
   --state-structure-text: #b3aeff;
   --border-input: #7c819c;
+  --state-error: #ff8a7a;
   --grid-line: rgba(244, 244, 249, 0.07);
   --hatch: rgba(244, 244, 249, 0.6);
   --elevation-card: none;
@@ -140,6 +142,7 @@
   --color-build-text: var(--state-build-text);
   --color-operate-text: var(--state-operate-text);
   --color-structure-text: var(--state-structure-text);
+  --color-error: var(--state-error);
   --color-ink-950: var(--ink-950);
   --color-ink-900: var(--ink-900);
   --color-ink-800: var(--ink-800);
@@ -273,14 +276,6 @@
   background-image: linear-gradient(180deg, var(--state-discover), var(--state-build), var(--state-operate));
 }
 
-@utility bg-system-grid {
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  background-position: center top;
-}
-
 @utility label-mono {
   font-family: var(--font-mono);
   font-size: var(--text-label);
@@ -313,19 +308,6 @@
   width: 100%;
   background: var(--border-strong);
   transform-origin: left center;
-}
-
-/* Text block sitting over a system graphic: soft paper halo, no box. */
-@utility text-halo {
-  background: radial-gradient(70% 70% at 35% 50%, var(--surface-primary) 30%, transparent 100%);
-}
-
-/* Grid that only shows near the pointer (observability metaphor). */
-@utility grid-reveal {
-  --mx: 50%;
-  --my: 50%;
-  mask-image: radial-gradient(260px circle at var(--mx) var(--my), black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 100%);
-  -webkit-mask-image: radial-gradient(260px circle at var(--mx) var(--my), black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 100%);
 }
 
 @layer utilities {
@@ -370,49 +352,27 @@
     animation-delay: calc(var(--i, 0) * 45ms + var(--word-delay, 0ms));
   }
 
-  /* typed workflow: packet + step activation, pure CSS, synced by negative delays */
-  .wf-track {
-    --wf-cycle: 7.2s;
+  /* Diagram builds (Keynote-style): parts appear one at a time once the parent .reveal is visible.
+     --b is the build order. Lines draw from their origin with a clip, in either orientation. */
+  .js .build-item {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.6s var(--ease-expo),
+      transform 0.6s var(--ease-expo);
+    transition-delay: calc(var(--b, 0) * 130ms + 120ms);
   }
-  .wf-packet {
-    animation: wf-travel-x var(--wf-cycle) linear infinite;
-    animation-play-state: paused;
+  .js .is-visible .build-item {
+    opacity: 1;
+    transform: none;
   }
-  .wf-step {
-    animation: wf-step var(--wf-cycle) linear infinite;
-    animation-play-state: paused;
-    animation-delay: calc(var(--i, 0) * (var(--wf-cycle) / var(--n, 6)) * -1);
+  .js .build-line {
+    clip-path: inset(0 100% 100% 0);
+    transition: clip-path 0.7s var(--ease-expo);
+    transition-delay: calc(var(--b, 0) * 130ms + 260ms);
   }
-  .is-visible .wf-packet,
-  .is-visible .wf-step {
-    animation-play-state: running;
-  }
-  @media (max-width: 47.99rem) {
-    .wf-packet {
-      animation-name: wf-travel-y;
-    }
-  }
-  .wf-vertical .wf-packet {
-    animation-name: wf-travel-y;
-  }
-
-  /* operating loop: active segment emphasis */
-  .loop-seg {
-    transition: opacity 0.6s var(--ease-expo), stroke-width 0.6s var(--ease-expo);
-  }
-  [data-active] .loop-seg:not([data-seg-active="true"]) {
-    opacity: 0.22;
-  }
-  [data-active] .loop-seg[data-seg-active="true"] {
-    stroke-width: 4.5;
-  }
-  .loop-node {
-    transition: transform 0.6s var(--ease-expo);
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .loop-node[data-node-active="true"] {
-    transform: scale(1.6);
+  .js .is-visible .build-line {
+    clip-path: inset(0 0 0 0);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -422,14 +382,117 @@
       transform: none;
       transition: none;
     }
+    .js .build-item,
+    .js .build-line {
+      opacity: 1;
+      transform: none;
+      clip-path: none;
+      transition: none;
+    }
     .js .word-inner {
       animation: none;
       transform: none;
       opacity: 1;
     }
-    .wf-packet,
-    .wf-step {
-      animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Typed flow v2 geometry (WorkflowDiagram). Vertical by default; horizontal once the
+   figure itself is ≥ 48rem wide (container query, so a narrow panel never squeezes six
+   columns). Animation rules live in the utilities layer above.
+------------------------------------------------------------------- */
+
+@layer components {
+  .wf2-list {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .wf2-step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .wf2-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-top: 0.3rem;
+  }
+  .wf2-link {
+    position: absolute;
+    left: 1.25rem;
+    top: 2.85rem;
+    bottom: -1.4rem;
+    width: 12px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .wf2-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+    background: var(--border-strong);
+  }
+  .wf2-line-dashed {
+    background: repeating-linear-gradient(to bottom, var(--border-strong) 0 4px, transparent 4px 8px);
+  }
+  .wf2-head {
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%) rotate(90deg);
+    color: var(--text-tertiary);
+  }
+  @container wf (min-width: 48rem) {
+    .wf2-list {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .wf2-step {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0 0.5rem;
+      text-align: center;
+    }
+    .wf2-text {
+      align-items: center;
+      padding-top: 0;
+    }
+    .wf2-link {
+      left: calc(50% + 1.85rem);
+      right: calc(-50% + 1.85rem);
+      top: 1.25rem;
+      bottom: auto;
+      width: auto;
+      height: 12px;
+      transform: translateY(-50%);
+    }
+    .wf2-line {
+      left: 0;
+      right: 0;
+      top: 50%;
+      bottom: auto;
+      width: auto;
+      height: 1px;
+      transform: translateY(-50%);
+    }
+    .wf2-line-dashed {
+      background: repeating-linear-gradient(to right, var(--border-strong) 0 4px, transparent 4px 8px);
+    }
+    .wf2-head {
+      left: auto;
+      right: -1px;
+      bottom: auto;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
@@ -454,15 +517,6 @@
   }
 }
 
-@keyframes draw-path {
-  from {
-    stroke-dashoffset: var(--path-length, 1000);
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 @keyframes face-in {
   from {
     opacity: 0;
@@ -482,48 +536,53 @@
   }
 }
 
-@keyframes wf-travel-x {
-  from {
-    left: 0%;
+/* Print and "Save as PDF": everything visible, no motion state left half-way (DEC-027), and every
+   canvas printed as paper, so dark sections and figures never come out as light ink on white (DEC-029). */
+@media print {
+  [data-theme="dark"],
+  [data-theme="dark"] .theme-dark,
+  .theme-dark {
+    --surface-primary: var(--paper-50);
+    --surface-secondary: var(--paper-100);
+    --surface-elevated: var(--paper-0);
+    --surface-inverse: var(--ink-950);
+    --text-primary: #0f1020;
+    --text-secondary: #474b60;
+    --text-tertiary: #5f647c;
+    --text-inverse: #f4f4f9;
+    --border-subtle: var(--paper-200);
+    --border-strong: var(--paper-300);
+    --brand-accent: var(--state-structure);
+    --brand-accent-contrast: #ffffff;
+    --state-discover-soft: #efe4f8;
+    --state-build-soft: #dfeefb;
+    --state-operate-soft: #dcf4ec;
+    --state-structure-soft: #e5e4ef;
+    --state-discover-text: var(--state-discover-deep);
+    --state-build-text: var(--state-build-deep);
+    --state-operate-text: var(--state-operate-deep);
+    --state-structure-text: var(--state-structure);
+    --grid-line: rgba(15, 16, 32, 0.07);
+    --hatch: rgba(15, 16, 32, 0.62);
+    color-scheme: light;
   }
-  to {
-    left: 100%;
+  .js .reveal,
+  .js .build-item,
+  .js .word-inner {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
   }
-}
-
-@keyframes wf-travel-y {
-  from {
-    top: 0%;
+  .js .rule {
+    transform: none !important;
   }
-  to {
-    top: 100%;
+  .js .build-line {
+    clip-path: none !important;
+    transition: none !important;
   }
-}
-
-@keyframes wf-step {
-  0% {
-    border-color: var(--wf-color, var(--border-strong));
-    background-color: var(--wf-soft, transparent);
-  }
-  14% {
-    border-color: var(--wf-color, var(--border-strong));
-    background-color: var(--wf-soft, transparent);
-  }
-  22%,
-  100% {
-    border-color: var(--border-strong);
-    background-color: var(--surface-elevated);
-  }
-}
-
-@keyframes tick {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 0.3;
+  header,
+  .no-print {
+    position: static !important;
   }
 }

@@ -28,6 +28,9 @@ export function MobileNav({ items, cta, locale, labels }: Props) {
     const trigger = triggerRef.current;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // The dialog is modal: the page behind it cannot be reached with Tab.
+    const main = document.getElementById("main");
+    main?.setAttribute("inert", "");
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
@@ -35,6 +38,7 @@ export function MobileNav({ items, cta, locale, labels }: Props) {
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
+      main?.removeAttribute("inert");
       window.removeEventListener("keydown", onKey);
       trigger?.focus();
     };

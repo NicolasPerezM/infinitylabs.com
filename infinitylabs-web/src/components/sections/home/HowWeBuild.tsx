@@ -1,41 +1,58 @@
-import { WorkflowDiagram } from "@/components/system/WorkflowDiagram";
+import type { CSSProperties } from "react";
+import { KindGlyph } from "@/components/system/KindGlyph";
+import { KIND_STYLE, WorkflowDiagram } from "@/components/system/WorkflowDiagram";
 import { SectionFrame } from "@/components/ui/SectionFrame";
-import { getPrinciples } from "@/content/principles";
-import { getSolution } from "@/content/solutions";
+import { getSolution, type StepKind } from "@/content/solutions";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
-/** How Infinity Labs builds: typed workflow in motion + principles as a ledger (no codes). */
+/**
+ * The demonstration (DEC-026, DEC-027). The system first, built in front of the visitor, unframed;
+ * then a key that ties each step type to the condition that earns it and to where it appears in
+ * this very flow (Tufte: integrate words and image). The agent is not used here, and the key says
+ * so: restraint shown, not claimed.
+ */
 export function HowWeBuild({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
   const t = d.home.build;
   const example = getSolution(locale, "document-intelligence")!;
-  const principles = getPrinciples(locale);
   return (
-    <SectionFrame id="build" title={t.title} state={t.state} stateStage="build" canvas="dark" grid>
-      <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-        <div className="reveal lg:col-span-5">
-          <h2 id="build-title" className="text-display-xl max-w-[14ch]">{t.headline}</h2>
-          <p className="mt-5 max-w-[44ch] text-body-lg text-text-secondary">{t.line}</p>
-        </div>
-        <div className="reveal lg:col-span-7" style={{ ["--reveal-delay" as string]: "120ms" }}>
-          <div className="rounded-xl border border-border-subtle bg-surface-secondary/70 p-4 sm:p-6">
-            <div className="label-mono mb-5 flex flex-wrap items-center justify-between gap-2 text-text-tertiary">
-              <span>{t.panelLeft}</span>
-              <span>{t.panelRight}</span>
-            </div>
-            <WorkflowDiagram steps={example.diagram} kinds={d.workflow.kinds} title={d.workflow.title} legend caption={t.caption} />
-          </div>
-        </div>
+    <SectionFrame id="build" title={t.title} canvas="dark">
+      <h2 id="build-title" className="text-display-xl max-w-[18ch]">{t.headline}</h2>
+
+      <div className="mt-12 border-t border-border-strong pt-10 md:mt-16">
+        <WorkflowDiagram steps={example.diagram} kinds={d.workflow.kinds} title={d.workflow.title} caption={t.caption} />
       </div>
-      <ol className="mt-16 border-t border-border-strong">
-        {principles.map((p, i) => (
-          <li key={p.name} className="reveal grid gap-2 border-b border-border-subtle py-4 md:grid-cols-[17rem_1fr] md:gap-6" style={{ ["--reveal-delay" as string]: `${(i % 4) * 50}ms` }}>
-            <h3 className="text-heading-sm font-semibold text-text-primary">{p.name}</h3>
-            <p className="text-small text-text-secondary">{p.statement}</p>
-          </li>
-        ))}
-      </ol>
+
+      <table className="reveal mt-14 w-full border-collapse text-left">
+        <thead className="hidden sm:table-header-group">
+          <tr className="border-b border-border-strong text-small font-medium text-text-secondary">
+            <th scope="col" className="w-[30%] pb-3">{t.key.type}</th>
+            <th scope="col" className="w-[32%] pb-3">{t.key.when}</th>
+            <th scope="col" className="hidden pb-3 sm:table-cell">{t.key.inFlow}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {t.kinds.map((k, i) => {
+            const kind = k.kind as StepKind;
+            const inFlow = example.diagram.filter((s) => s.kind === kind).map((s) => s.label).join(" · ");
+            return (
+              <tr key={k.kind} className="build-item grid gap-1 border-b border-border-subtle py-4 sm:table-row sm:py-0" style={{ ["--b" as string]: i } as CSSProperties}>
+                <th scope="row" className="font-normal sm:py-4">
+                  <span className="inline-flex items-center gap-2.5 text-body font-semibold text-text-primary">
+                    <span style={{ color: KIND_STYLE[kind].color }} className="inline-flex">
+                      <KindGlyph kind={kind} size={16} className="shrink-0" />
+                    </span>
+                    {d.workflow.kinds[kind]}
+                  </span>
+                </th>
+                <td className="text-body text-text-secondary sm:py-4 sm:pr-6">{k.where}</td>
+                <td className="hidden text-body sm:table-cell sm:py-4">{inFlow ? <span className="text-text-primary">{inFlow}</span> : <span className="text-text-tertiary">{t.notHere}</span>}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </SectionFrame>
   );
 }

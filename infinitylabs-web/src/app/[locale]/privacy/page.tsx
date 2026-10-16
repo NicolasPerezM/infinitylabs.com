@@ -23,7 +23,7 @@ export default async function PrivacyPage({ params }: Params) {
   return (
     <section aria-labelledby="privacy-h" className="bg-surface-primary">
       <Container size="prose" className="flex flex-col gap-6 py-section">
-        <span className="label-mono text-text-tertiary">{t.eyebrow}</span>
+        <p className="text-small font-medium text-text-tertiary">{t.status}</p>
         <h1 id="privacy-h" className="text-display-lg">{t.title}</h1>
         <p className="text-body text-text-secondary">{t.intro}</p>
         <ul className="flex flex-col gap-3 text-body text-text-secondary">

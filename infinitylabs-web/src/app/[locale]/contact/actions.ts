@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { deliver, INTENTS, validate, type ContactInput, type FieldErrors } from "@/lib/contact";
+import { cleanOption, deliver, INTENTS, PROJECT_STAGES, TIMELINES, validate, type ContactInput, type FieldErrors } from "@/lib/contact";
 
 export type ContactState = { status: "idle" | "success" | "error" | "unconfigured"; errors?: FieldErrors; message?: string; values?: Partial<ContactInput> };
 
@@ -22,12 +22,12 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     name: str(formData, "name"),
     email: str(formData, "email"),
     company: str(formData, "company"),
-    role: str(formData, "role"),
+    role: str(formData, "role") || undefined,
     companySize: str(formData, "companySize") || undefined,
     improve: str(formData, "improve"),
     systems: str(formData, "systems") || undefined,
-    stage: str(formData, "stage"),
-    timeline: str(formData, "timeline"),
+    stage: cleanOption(str(formData, "stage"), PROJECT_STAGES),
+    timeline: cleanOption(str(formData, "timeline"), TIMELINES),
     intent: (INTENTS as readonly string[]).includes(intentRaw) ? intentRaw : "general",
     consent: formData.get("consent") === "on",
     locale,

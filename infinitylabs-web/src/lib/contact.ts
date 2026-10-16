@@ -14,18 +14,18 @@ import { getDictionary } from "@/i18n/dictionaries";
 export const PROJECT_STAGES = en.contact.options.stages;
 export const TIMELINES = en.contact.options.timelines;
 export const COMPANY_SIZES = en.contact.options.sizes;
-export const INTENTS = ["sprint", "agentic-workflow-systems", "enterprise-knowledge-document-ai", "managed-ai", "general"] as const;
+export const INTENTS = ["sprint", "agentic-workflow-systems", "enterprise-knowledge-document-ai", "managed-ai", "digital-growth-system", "labs", "general"] as const;
 
 export type ContactInput = {
   name: string;
   email: string;
   company: string;
-  role: string;
+  role?: string;
   companySize?: string;
   improve: string;
   systems?: string;
-  stage: string;
-  timeline: string;
+  stage?: string;
+  timeline?: string;
   intent: string;
   consent: boolean;
   locale: Locale;
@@ -33,22 +33,23 @@ export type ContactInput = {
 
 export type FieldErrors = Partial<Record<keyof ContactInput, string>>;
 
-const FREE_MAIL = /@(gmail|hotmail|outlook|yahoo|icloud|live|proton|protonmail)\./i;
-
+/**
+ * Ask only what we need to reply (DEC-027): name, email (any domain: many mid-market owners use a
+ * personal address), company, the process, and consent. Role, size, stage, systems and timeline
+ * help us prepare and are optional; an unknown option value is simply dropped.
+ */
 export function validate(input: ContactInput): FieldErrors {
   const m = getDictionary(input.locale).contact.errors;
   const e: FieldErrors = {};
   if (input.name.trim().length < 2) e.name = m.name;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.email)) e.email = m.email;
-  else if (FREE_MAIL.test(input.email)) e.email = m.workEmail;
   if (input.company.trim().length < 2) e.company = m.company;
-  if (input.role.trim().length < 2) e.role = m.role;
   if (input.improve.trim().length < 20) e.improve = m.improve;
-  if (!(PROJECT_STAGES as readonly string[]).includes(input.stage)) e.stage = m.stage;
-  if (!(TIMELINES as readonly string[]).includes(input.timeline)) e.timeline = m.timeline;
   if (!input.consent) e.consent = m.consent;
   return e;
 }
+
+export const cleanOption = (value: string | undefined, allowed: readonly string[]) => (value && allowed.includes(value) ? value : undefined);
 
 export type DeliveryResult = { delivered: boolean; provider: "webhook" | "resend" | "none"; error?: string };
 

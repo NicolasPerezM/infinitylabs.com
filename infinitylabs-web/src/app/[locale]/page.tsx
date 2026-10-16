@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Hero } from "@/components/sections/home/Hero";
 import { Gap } from "@/components/sections/home/Gap";
+import { ModelCompare } from "@/components/sections/home/ModelCompare";
 import { OperatingModelScrolly } from "@/components/sections/home/OperatingModelScrolly";
 import { SolutionsIndex } from "@/components/sections/home/SolutionsIndex";
 import { GrowthMarketing } from "@/components/sections/home/GrowthMarketing";
@@ -11,10 +12,9 @@ import { Proof } from "@/components/sections/home/Proof";
 import { LabsTeaser } from "@/components/sections/home/LabsTeaser";
 import { Commitments } from "@/components/sections/home/Commitments";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { ProductShot, hasShot } from "@/components/system/ProductShot";
 import { SectionFrame } from "@/components/ui/SectionFrame";
-import { SiteRail } from "@/components/system/SiteRail";
 import { TextLink } from "@/components/ui/TextLink";
-import { getLabs } from "@/content/labs";
 import { getOperatingModel } from "@/content/operating-model";
 import { getSite } from "@/content/site";
 import { getSolutions } from "@/content/solutions";
@@ -28,54 +28,56 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "es";
   const site = getSite(locale);
-  const title = `${site.name} — ${site.category}`;
+  const title = `${site.name} · ${site.category}`;
   return { ...buildMetadata(locale, { title, description: site.description, path: "/" }), title: { absolute: title } };
 }
 
-/** Homepage v1.1: nine framed sections on one continuous line, in the visitor's language. */
+/**
+ * Homepage v1.4 (DEC-027): the order the expert panel agreed. The idea; what is (the gap); the
+ * engineering that answers it, shown working; the operating model with its comparison; where it
+ * applies; marketing; what the work teaches (Labs); what you can hold us to; the first step;
+ * the close, which echoes the idea once.
+ */
 export default async function HomePage({ params }: Params) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
   const d = getDictionary(locale);
   const stages = getOperatingModel(locale);
-  const labs = getLabs(locale);
-  const stageLabels = { discover: d.stages.discover, build: d.stages.build, operate: d.stages.operate };
-  const railSections = (["top", "gap", "model", "solutions", "growth", "build", "sprint", "labs", "commitments", "next"] as const).map((id) => ({ id, label: d.rail[id] }));
+  const m = d.home.model;
+  const solutions = getSolutions(locale);
 
   return (
     <>
-      <SiteRail sections={railSections} ariaLabel={d.rail.sections} />
       <Hero locale={locale} />
       <Gap locale={locale} />
-      <SectionFrame id="model" title={d.home.model.title} state={d.home.model.state} stateStage="build">
-        <div className="reveal mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <h2 id="model-title" className="text-display-xl max-w-[16ch]">{d.home.model.headline}</h2>
-          <p className="max-w-[40ch] text-body text-text-secondary">{d.home.model.lede}</p>
+      <HowWeBuild locale={locale} />
+      <SectionFrame id="model" title={m.title}>
+        <h2 id="model-title" className="text-display-2xl max-w-[16ch]">{m.headline}</h2>
+        <div className="mt-12 md:mt-16">
+          <ModelCompare locale={locale} />
         </div>
-        <OperatingModelScrolly
-          locale={locale}
-          stages={stages}
-          labels={stageLabels}
-          panelTitle={d.home.model.panel}
-          capabilitiesCta={d.home.model.capabilitiesCta}
-          labs={{ label: d.home.model.labsLabel, body: labs.intro.short, cta: d.home.model.labsCta }}
-        />
+        <div className="mt-20 md:mt-28">
+          <OperatingModelScrolly locale={locale} stages={stages} labels={d.stages} capabilitiesCta={m.capabilitiesCta} />
+        </div>
       </SectionFrame>
-      <SectionFrame id="solutions" title={d.home.solutions.title} state={d.home.solutions.state} stateStage="build" canvas="secondary">
-        <div className="reveal mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <SectionFrame id="solutions" title={d.home.solutions.title} canvas="secondary">
+        <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <h2 id="solutions-title" className="text-display-xl max-w-[16ch]">{d.home.solutions.headline}</h2>
           <TextLink href={href(locale, "/solutions")} event="solution_view" className="shrink-0">{d.home.solutions.all}</TextLink>
         </div>
-        <SolutionsIndex locale={locale} solutions={getSolutions(locale)} kinds={d.workflow.kinds} illustrative={d.home.solutions.illustrative} howItWorks={d.home.solutions.howItWorks} workflowTitle={d.workflow.title} />
+        <SolutionsIndex
+          locale={locale}
+          solutions={solutions}
+          previews={Object.fromEntries(solutions.filter((s) => hasShot(s.slug)).map((s) => [s.slug, <ProductShot key={s.slug} slug={s.slug as Parameters<typeof ProductShot>[0]["slug"]} locale={locale} label={d.home.solutions.illustrative} />]))}
+        />
       </SectionFrame>
       <GrowthMarketing locale={locale} />
-      <HowWeBuild locale={locale} />
-      <SprintOffer locale={locale} />
-      <Proof />
       <LabsTeaser locale={locale} />
+      <Proof />
       <Commitments locale={locale} />
-      <FinalCta locale={locale} />
+      <SprintOffer locale={locale} />
+      <FinalCta locale={locale} kicker={d.meta.tagline} />
     </>
   );
 }

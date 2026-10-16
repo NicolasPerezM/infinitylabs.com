@@ -66,3 +66,44 @@ Automated checks per language: sentence length distribution, banned-hype-word li
 7. Product names are never translated. Stage names always are.
 8. Technical vocabulary belongs in "how we work" sections, never in an offer name or a headline.
 9. New copy is written in the three languages in the same commit, or it does not ship.
+
+## 6. v1.3 — keynote discipline (2026-10-14, DEC-026)
+
+A second pass applied Steve Jobs’ presentation method to the existing copy. Nothing was invented; claims were shortened, ordered and given their meaning.
+
+| Principle | What changed on the site |
+|---|---|
+| One idea per slide | One claim per section; supporting lists cut to three items (stage areas, AI × marketing columns, before/after rows) |
+| Headlines a press could repeat | Every home H2 ≤ 8 words except the closing question; a `promise` field (≤ 8 words) heads every solution, capability and offer page, and the old headline becomes the lede |
+| Before → after | The gap is three paired rows: pilot → production system |
+| Dress up the numbers | “1 team · 3 stages · 0 handoffs”, each with what it means for the client. No client metrics exist yet (GAP-006), so none are shown |
+| Rule of three | Three stages, three rows, three Labs initiatives, three Sprint frames |
+| Tension before the reveal | Problem (gap) comes before the operating model; the demonstration comes before the solution list |
+| Repeat the core idea | “The gap is not intelligence. It is engineering.” appears in the gap and again above the closing question |
+| One more thing | Labs is the last reveal, introduced by “And there is more.” / “Y hay algo más.” / “Et ce n’est pas tout.”, deliberately not the literal phrase |
+| No redundancy | A promise never repeats its lede (checked on all 18 detail pages) |
+
+**Measured on the production build** (visible text inside `<main>`, hidden previews excluded):
+
+| | ES | EN | FR |
+|---|---:|---:|---:|
+| Home words, v1.2 → v1.3 | 1 202 → 579 | 1 064 → 506 | 1 214 → 601 |
+| Home H2s | 9 | 9 | 9 |
+| Average words per H2 | 6.4 | 5.4 | 7.0 |
+
+**Standing rule added:** a new page or section ships with its promise first (≤ 8 words), then at most one supporting sentence, then the proof or the picture.
+
+## 7. v1.4 — expert panel and the generic-pattern purge (2026-10-14, DEC-027)
+
+The narrative, persuasion and UX councils rewrote the copy of every page in the three languages under the rules in `docs/EXPERT_PANEL.md` §5. What changed in the method:
+
+- **The idea worth spreading** replaces the category claim as the H1: “La IA se gana su lugar en producción.” / “AI earns its place in production.” / “L’IA gagne sa place en production.” The About lede states the why; the home close echoes the idea once.
+- **Negative parallelism** (“no X, sino Y”, the most recognisable LLM tell in Spanish and French) was cut from 42 → 13 sentences in ES, 42 → 18 in EN, 46 → 18 in FR. What remains is factual (“No es un caso de cliente”, “los puntos no son datos de clientes”, “Si no lo hay, te lo decimos”) or one per page at most, never in an H1 or H2.
+- **Two-fragment slogans** capped at two on the site (“Muchos pilotos. Pocos sistemas.” and “Menos digitación. Más control.”); every other promise is one sentence with a verb.
+- **Crutch vocabulary** gone from headlines and ledes: “sistemas inteligentes”, “impulsados por IA”, “tipar”, “Diseñamos, construimos y operamos” (stage 1 is always “Descubrir”).
+- **Detail pages** follow the sparkline: the lede says today → with the system; sections are “Cómo funciona hoy”, “Cómo funciona con el sistema”, “Qué cambia para tu equipo”.
+- **Asks** come from one lexicon: “Cuéntanos un proceso” (any Sprint/general intent), “Dimensionar {name}” (an engagement), “Proponer un experimento” (Labs), always with the same reassurance line built from claims already on the site.
+- **Implied proof removed:** “casi todos empiezan con el Sprint”, “lo que preguntan los compradores”, “Labs toma un número reducido cada año”, “suelen rendir” (industries).
+
+Measured on the build (visible text in `<main>` of the home): ES 601 words, EN 539, FR 613; average H2 length 6.8 / 6.4 / 7.6 words.
+

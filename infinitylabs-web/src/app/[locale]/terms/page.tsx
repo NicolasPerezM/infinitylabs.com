@@ -23,7 +23,7 @@ export default async function TermsPage({ params }: Params) {
   return (
     <section aria-labelledby="terms-h" className="bg-surface-primary">
       <Container size="prose" className="flex flex-col gap-6 py-section">
-        <span className="label-mono text-text-tertiary">{t.eyebrow}</span>
+        <p className="text-small font-medium text-text-tertiary">{t.status}</p>
         <h1 id="terms-h" className="text-display-lg">{t.title}</h1>
         <p className="text-body text-text-secondary">
           {t.body} <a href={`mailto:${siteFacts.email}`} className="underline underline-offset-4">{siteFacts.email}</a>

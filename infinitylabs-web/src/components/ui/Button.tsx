@@ -6,11 +6,11 @@ type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 /**
- * Monochrome buttons (ink on paper, paper on ink) with the brand's only colour gesture:
- * a state-gradient rail that sweeps in on hover. No pills, no glow.
+ * Monochrome buttons (ink on paper, paper on ink). No gradient sweep, no press scale: colour is
+ * reserved for stages and step types (DEC-027).
  */
 const base =
-  "group/btn relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-md font-medium whitespace-nowrap transition-[background-color,color,border-color,transform] duration-200 ease-expo focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.985] disabled:opacity-60 disabled:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:state-gradient after:transition-transform after:duration-500 after:ease-expo hover:after:scale-x-100";
+  "group/btn relative inline-flex items-center justify-center gap-2 rounded-md text-center font-medium leading-snug transition-[background-color,color,border-color] duration-200 ease-expo focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
   primary: "bg-text-primary text-surface-primary hover:bg-ink-700 dark:hover:bg-paper-200",
@@ -19,8 +19,8 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  md: "h-11 px-4 text-small",
-  lg: "h-12 px-5 text-body",
+  md: "min-h-11 px-4 py-2 text-small",
+  lg: "min-h-12 px-5 py-2.5 text-body",
 };
 
 type Common = { variant?: Variant; size?: Size; className?: string; children: ReactNode; event?: string };

@@ -41,7 +41,7 @@ function writeChoice(next: ThemeChoice) {
   listeners.forEach((cb) => cb());
 }
 
-/** Three-state theme control: light · system · dark. Persisted in localStorage; follows the OS when "system". */
+/** Three-state theme control with visible words (an icon alone was ambiguous). Persisted; follows the OS on "system". */
 export function ThemeToggle({ labels, className }: { labels: Labels; className?: string }) {
   const choice = useSyncExternalStore(subscribe, readChoice, () => "system" as ThemeChoice);
 
@@ -65,21 +65,21 @@ export function ThemeToggle({ labels, className }: { labels: Labels; className?:
   ];
 
   return (
-    <div role="group" aria-label={labels.label} className={cn("inline-flex h-9 items-center rounded-md border border-border-input p-0.5", className)}>
+    <div role="group" aria-label={labels.label} className={cn("inline-flex flex-wrap items-center gap-x-1 gap-y-1 text-small", className)}>
+      <span className="mr-2 text-text-tertiary">{labels.label}</span>
       {options.map((o) => (
         <button
           key={o.id}
           type="button"
           aria-pressed={choice === o.id}
-          aria-label={`${labels.label}: ${o.label}`}
-          title={o.label}
           onClick={() => set(o.id)}
           className={cn(
-            "inline-flex size-8 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150",
-            choice === o.id ? "bg-text-primary text-surface-primary" : "hover:text-text-primary",
+            "inline-flex h-9 items-center gap-1.5 rounded-sm px-2 transition-colors duration-150",
+            choice === o.id ? "text-text-primary underline decoration-2 underline-offset-[6px]" : "text-text-tertiary hover:text-text-primary",
           )}
         >
           {o.icon}
+          {o.label}
         </button>
       ))}
     </div>
